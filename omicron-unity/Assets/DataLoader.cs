@@ -45,7 +45,7 @@ public class DataLoader : MonoBehaviour
          // Initialising stars
         for (var j = 0; j<star_data.Count;j++)
         {
-            GameObject star = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            GameObject star = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             star.transform.localScale = new Vector3(0.0035f*float.Parse(star_data[j]["absmag"]), 0.0035f*float.Parse(star_data[j]["absmag"]), 0.0035f*float.Parse(star_data[j]["absmag"]));
             star.transform.parent = transform; // Set the parent of the star to the intialsol
             // Remove collider
