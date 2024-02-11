@@ -46,12 +46,13 @@ public class DataLoader : MonoBehaviour
         for (var j = 0; j<star_data.Count;j++)
         {
             GameObject star = GameObject.CreatePrimitive(PrimitiveType.Quad);
-            star.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
+            star.transform.localScale = new Vector3(0.0035f*float.Parse(star_data[j]["absmag"]), 0.0035f*float.Parse(star_data[j]["absmag"]), 0.0035f*float.Parse(star_data[j]["absmag"]));
             star.transform.parent = transform; // Set the parent of the star to the intialsol
             // Remove collider
             star.GetComponent<Collider>().enabled = false;
             star.transform.position = new Vector3(float.Parse(star_data[j]["x0"])*0.3048f, float.Parse(star_data[j]["y0"])*0.3048f, float.Parse(star_data[j]["z0"])*0.3048f); // Since 1 parsec is 1 foot, we multiply by 0.3048 to convert to meters
-            star.GetComponent<Renderer>().material.color = getColor(star_data[j]["spect"]); // Set color from the 
+            star.GetComponent<Renderer>().material.color = getColor(star_data[j]["spect"]); // Set color from the rgb value
+            star.GetComponent<Renderer>().material.shader = Shader.Find("Unlit/Color");
         }
         //Debug.Log(star_data[0]["spect"]);
         // string constellation = "Scl,3,116231,4577,4577,115102,115102,116231";
@@ -159,7 +160,7 @@ public class DataLoader : MonoBehaviour
     {
         TextAsset data = AssetDatabase.LoadAssetAtPath<TextAsset>("Assets/Constellations/constellation_coord.txt") as TextAsset;
         var lines = data.text.Split('\n');
-        for (var i = 0; i < 44; i++)
+        for (var i = 0; i < 1; i++)
         {
             if (lines[i] != "")
             {
