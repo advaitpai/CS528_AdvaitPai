@@ -52,7 +52,7 @@ public class DataLoader : MonoBehaviour
             star.GetComponent<Collider>().enabled = false;
             star.transform.position = new Vector3(float.Parse(star_data[j]["x0"])*0.3048f, float.Parse(star_data[j]["y0"])*0.3048f, float.Parse(star_data[j]["z0"])*0.3048f); // Since 1 parsec is 1 foot, we multiply by 0.3048 to convert to meters
             star.GetComponent<Renderer>().material.color = getColor(star_data[j]["spect"]); // Set color from the rgb value
-            star.GetComponent<Renderer>().material.shader = Shader.Find("Unlit/Color");
+            star.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Self-Illumin");
         }
         //Debug.Log(star_data[0]["spect"]);
         // string constellation = "Scl,3,116231,4577,4577,115102,115102,116231";
