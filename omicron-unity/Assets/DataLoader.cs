@@ -21,7 +21,7 @@ public class DataLoader : MonoBehaviour
         star_data = new List<Dictionary<string, string>>();
         stars = new List<GameObject>();
         // Read CSV file and store it in a list
-        //TextAsset star_data = AssetDatabase.LoadAssetAtPath<TextAsset>("Assets/athyg_31_reduced_m10_cleaned_subset.csv") as TextAsset;
+        // TextAsset star_data = AssetDatabase.LoadAssetAtPath<TextAsset>("Assets/athyg_31_reduced_m10_cleaned_subset.csv") as TextAsset;
         var lines = star_datafile.text.Split('\n');
         for (var i = 1; i < lines.Length-1; i++)
         {
@@ -37,18 +37,19 @@ public class DataLoader : MonoBehaviour
                 temp_star["z0"] = (float.Parse(values[4])*0.3048f).ToString();
                 temp_star["absmag"] = values[5];
                 temp_star["mag"] = values[6];
-                //temp_star["vx"] = (float.Parse(values[7])*1.02269e-3f).ToString();
-                //temp_star["vy"] = (float.Parse(values[8])*1.02269e-3f).ToString();
-                //temp_star["vz"] = (float.Parse(values[9])*1.02269e-3f).ToString();
-                temp_star["vx"] = (float.Parse(values[7])).ToString();
-                temp_star["vy"] = (float.Parse(values[8])).ToString();
-                temp_star["vz"] = (float.Parse(values[9])).ToString();
+                temp_star["vx"] = (float.Parse(values[7])*0.3048f*1.02269e-3f*1000).ToString();
+                temp_star["vy"] = (float.Parse(values[8])*0.3048f*1.02269e-3f*1000).ToString();
+                temp_star["vz"] = (float.Parse(values[9])*0.3048f*1.02269e-3f*1000).ToString();
+                //temp_star["vx"] = (float.Parse(values[7])).ToString();
+                //temp_star["vy"] = (float.Parse(values[8])).ToString();
+                //temp_star["vz"] = (float.Parse(values[9])).ToString();
                 temp_star["spect"] = values[10];
                 star_data.Add(temp_star);
             }
-            else{
-                Debug.Log("Error in line " + i);
-                Debug.Log(values.Length);
+            else
+            {
+                //Debug.Log("Error in line " + i);
+                //Debug.Log(values.Length);
             }  
         }
         Debug.Log("Data loaded, star count: " + star_data.Count);
@@ -114,7 +115,7 @@ public class DataLoader : MonoBehaviour
     void drawConstellation(string constellation)
     {
         // Split the constellation string
-        Debug.Log(constellation);
+        //Debug.Log(constellation);
         var hip_id = constellation.Split(' ');
         for (var i = 3; i < hip_id.Length-1; i+=2)
         {
@@ -153,7 +154,7 @@ public class DataLoader : MonoBehaviour
             } 
             if (point1 != new Vector3() && point2 != new Vector3())
             {
-                Debug.Log("Attempting to draw line between " + point1 + " and " + point2);
+                //Debug.Log("Attempting to draw line between " + point1 + " and " + point2);
                 GameObject line = new GameObject();
                 line.transform.parent = transform;
                 LineRenderer lineRenderer = line.AddComponent<LineRenderer>();
@@ -171,18 +172,18 @@ public class DataLoader : MonoBehaviour
     {
         //TextAsset data = AssetDatabase.LoadAssetAtPath<TextAsset>("Assets/Constellations/constellation_coord.txt") as TextAsset;
         var lines = constellation_datafile.text.Split('\n');
-        Debug.Log("Reading constellation data"+ lines.Length);
+        //Debug.Log("Reading constellation data"+ lines.Length);
         int count = 0;
         for (var i = 0; i < lines.Length; i++)
         {
             if (i > 88)
             {
-                Debug.Log("Constellations drawn: "+count);
+                //Debug.Log("Constellations drawn: "+count);
                 break;
             }
             if (lines[i] != "")
             {
-                Debug.Log("Drawing constellation"+(i+1));
+                //Debug.Log("Drawing constellation"+(i+1));
                 count += 1;
                 drawConstellation(lines[i]);
             }
@@ -190,8 +191,8 @@ public class DataLoader : MonoBehaviour
     } 
     void moveStar()
     {
-        Debug.Log("Moving stars"+Time.deltaTime);
-        Debug.Log(star_data.Count);
+        //Debug.Log("Moving stars"+Time.deltaTime);
+        //Debug.Log(star_data.Count);
         for (var i = 0; i<star_data.Count;i++)
         {
             GameObject star = transform.GetChild(i).gameObject;
