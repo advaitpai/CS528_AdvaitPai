@@ -32,14 +32,17 @@ public class DataLoader : MonoBehaviour
                 temp_star["hip"] = values[0];
                 temp_star["dist"] = values[1];
                 // Convert to meters x0, y0, z0
-                temp_star["x0"] = (float.Parse(values[2])).ToString();
-                temp_star["y0"] = (float.Parse(values[3])).ToString();
-                temp_star["z0"] = (float.Parse(values[4])).ToString();
+                temp_star["x0"] = (float.Parse(values[2])*0.3048f).ToString();
+                temp_star["y0"] = (float.Parse(values[3])*0.3048f).ToString();
+                temp_star["z0"] = (float.Parse(values[4])*0.3048f).ToString();
                 temp_star["absmag"] = values[5];
                 temp_star["mag"] = values[6];
-                temp_star["vx"] = (float.Parse(values[7])*1.02269e-3f).ToString();
-                temp_star["vy"] = (float.Parse(values[8])*1.02269e-3f).ToString();
-                temp_star["vz"] = (float.Parse(values[9])*1.02269e-3f).ToString();
+                //temp_star["vx"] = (float.Parse(values[7])*1.02269e-3f).ToString();
+                //temp_star["vy"] = (float.Parse(values[8])*1.02269e-3f).ToString();
+                //temp_star["vz"] = (float.Parse(values[9])*1.02269e-3f).ToString();
+                temp_star["vx"] = (float.Parse(values[7])).ToString();
+                temp_star["vy"] = (float.Parse(values[8])).ToString();
+                temp_star["vz"] = (float.Parse(values[9])).ToString();
                 temp_star["spect"] = values[10];
                 star_data.Add(temp_star);
             }
@@ -65,7 +68,7 @@ public class DataLoader : MonoBehaviour
         //Debug.Log(star_data[0]["spect"]);
         // string constellation = "Scl,3,116231,4577,4577,115102,115102,116231";
         // drawConstellation(constellation);
-        InvokeRepeating("moveStar", 2.0f, 2.0f);
+        //InvokeRepeating("moveStar", 2.0f, 2.0f);
     }
 
     // Update is called once per frame
