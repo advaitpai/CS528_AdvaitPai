@@ -30,7 +30,7 @@ public class StarDataLoader : MonoBehaviour
         var lines = star_datafile.text.Split('\n');
         star_data = new List<StarData>();
         stars_objects = new List<GameObject>();
-        threshold = 50f;
+        threshold = 25f;
         //last_render_pos = person_camera.transform.position;
         last_render_pos = new Vector3(0,0,0);
         for (var i = 1; i < lines.Length-1; i++)
@@ -57,7 +57,7 @@ public class StarDataLoader : MonoBehaviour
                 GameObject star = GameObject.CreatePrimitive(PrimitiveType.Quad);
                 star.transform.position = new Vector3(star_val.x0, star_val.y0, star_val.z0);
                 star.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-                star.GetComponent<Renderer>().material.color = getColor(star_val.spect);
+                star.GetComponent<Renderer>().material.color = getColour(star_val.spect);
                 star.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Self-Illumin");
                 stars_objects.Add(star);
             }
@@ -82,7 +82,7 @@ public class StarDataLoader : MonoBehaviour
         }
 
     }
-    Color getColor(string spect) // http://www.vendian.org/mncharity/dir3/starcolor/ Using the rgb values from here
+    Color getColour(string spect) // http://www.vendian.org/mncharity/dir3/starcolor/ Using the rgb values from here
     {
         if (spect == "O")
         {
