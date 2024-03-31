@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using TMPro;
 
 public class StarDataLoader : MonoBehaviour
 {
@@ -20,7 +21,7 @@ public class StarDataLoader : MonoBehaviour
 
     public float threshold;
 
-    public 
+    public TMP_Text sol_dist;
 
     // Start is called before the first frame update
     void Start()
@@ -30,6 +31,7 @@ public class StarDataLoader : MonoBehaviour
         var lines = star_datafile.text.Split('\n');
         star_data = new List<StarData>();
         stars_objects = new List<GameObject>();
+
         threshold = 25f;
         //last_render_pos = person_camera.transform.position;
         last_render_pos = new Vector3(0,0,0);
@@ -80,6 +82,7 @@ public class StarDataLoader : MonoBehaviour
             Debug.Log("10 units moved! Last render position: " + last_render_pos);
             drawStars();
         }
+        sol_dist.text = "Distance to Sol: "+((calculate_distance(person_camera.transform.position,new Vector3(0,1,0))/0.3048).ToString());
 
     }
     Color getColour(string spect) // http://www.vendian.org/mncharity/dir3/starcolor/ Using the rgb values from here
