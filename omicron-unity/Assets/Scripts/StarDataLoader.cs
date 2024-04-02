@@ -23,6 +23,10 @@ public class StarDataLoader : MonoBehaviour
 
     public TMP_Text sol_dist;
 
+    public static float scale;
+
+    public TextAsset exoplanet_datafile;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -31,7 +35,7 @@ public class StarDataLoader : MonoBehaviour
         var lines = star_datafile.text.Split('\n');
         star_data = new List<StarData>();
         stars_objects = new List<GameObject>();
-
+        scale = 1f;
         threshold = 25f;
         //last_render_pos = person_camera.transform.position;
         last_render_pos = new Vector3(0,0,0);
@@ -49,13 +53,15 @@ public class StarDataLoader : MonoBehaviour
                 star_val.z0 = float.Parse(values[4])*0.3048f;
                 star_val.absmag = float.Parse(values[5]);
                 star_val.mag = values[6];
-                star_val.vx = float.Parse(values[7])*1.02269e-3f*100000;
-                star_val.vy = float.Parse(values[8])*1.02269e-3f*100000;
-                star_val.vz = float.Parse(values[9])*1.02269e-3f*100000;
+                star_val.vx = float.Parse(values[7])*0.3048f*1.02269e-3f*100000;
+                star_val.vy = float.Parse(values[8])*0.3048f*1.02269e-3f*100000;
+                star_val.vz = float.Parse(values[9])*0.3048f*1.02269e-3f*100000;
                 star_val.spect = values[10];
                 star_val.visible = false; 
-                //star_val.relative_dist = Vector3.Distance(last_render_pos,new Vector3(star_val.x0,star_val.y0,star_val.z0));
+                star_val.pl_pnum = getPlNum(star_val.hip);
                 star_data.Add(star_val);
+                
+                // Create a quad for each star
                 GameObject star = GameObject.CreatePrimitive(PrimitiveType.Quad);
                 star.transform.position = new Vector3(star_val.x0, star_val.y0, star_val.z0);
                 star.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
@@ -67,7 +73,8 @@ public class StarDataLoader : MonoBehaviour
             {
                 Debug.Log("Error in line " + i);
                 Debug.Log(values.Length);
-            }  
+            }
+    
         }
         drawStars();
 
@@ -85,7 +92,7 @@ public class StarDataLoader : MonoBehaviour
         sol_dist.text = "Distance to Sol: "+((calculate_distance(person_camera.transform.position,new Vector3(0,1,0))/0.3048).ToString());
 
     }
-    Color getColour(string spect) // http://www.vendian.org/mncharity/dir3/starcolor/ Using the rgb values from here
+    public Color getColour(string spect) // http://www.vendian.org/mncharity/dir3/starcolor/ Using the rgb values from here
     {
         if (spect == "O")
         {
@@ -131,7 +138,7 @@ public class StarDataLoader : MonoBehaviour
         for (var i = 0; i < star_data.Count; i++)
         {
             StarData star_val = star_data[i];
-            Vector3 star_loc = new Vector3(star_val.x0,star_val.y0,star_val.z0);
+            Vector3 star_loc = new Vector3(star_val.x0*scale,star_val.y0*scale,star_val.z0*scale);
             // if(star_val.hip != "")
             // {
             //     star_val.visible = true;
@@ -155,5 +162,22 @@ public class StarDataLoader : MonoBehaviour
         star_loaded = true;
         Debug.Log("Stars loaded: " + count);
         Debug.Log("Max distance: " + max_dist);
+    }
+    int getPlNum(string star_hip)
+    {
+        var lines = exoplanet_datafile.text.Split('\n');
+        for (var i =1; i<lines.Length;i++)
+        {
+            var values = lines[i].Split(',');
+            if (values.Length == 2)
+            {
+                string temp_hip = values[0];
+                if (temp_hip == star_hip)
+                {
+                    return int.Parse(values[1]);
+                }
+            }
+        }
+        return 0;
     }
 }

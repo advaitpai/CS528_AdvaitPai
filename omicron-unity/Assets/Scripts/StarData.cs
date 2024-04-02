@@ -18,4 +18,5 @@ public class StarData : MonoBehaviour
     public string spect;
     public bool visible;
     //public float relative_dist;
+    public int pl_pnum;
 }

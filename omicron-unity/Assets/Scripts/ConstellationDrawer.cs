@@ -81,8 +81,8 @@ public class ConstellationDrawer : StarDataLoader
                 LineRenderer lineRenderer = line.AddComponent<LineRenderer>();
                 lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
                 lineRenderer.positionCount = 2;
-                lineRenderer.startWidth = 0.01f;
-                lineRenderer.endWidth = 0.01f;
+                lineRenderer.startWidth = 0.03f;
+                lineRenderer.endWidth = 0.03f;
                 lineRenderer.SetPosition(0, point1);
                 lineRenderer.SetPosition(1, point2);
             }  

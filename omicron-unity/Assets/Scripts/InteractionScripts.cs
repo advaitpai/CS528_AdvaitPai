@@ -2,30 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ExoplanetChange : StarDataLoader
+public class InteractionScripts : StarDataLoader
 {
-    public TextAsset exoplanet_datafile;
-    public bool exoplanet_toggle;
-
-    public static List<ExoplanetData> exoplanet_data;
+    
+    public static bool exoplanet_color;
 
     // Start is called before the first frame update
     void Start()
     {
-        exoplanet_toggle = false;
-        exoplanet_data = new List<ExoplanetData>();
-        var lines = exoplanet_datafile.text.Split('\n');
-        for (var i =1; i<lines.Length;i++)
-        {
-            var values = lines[i].Split(',');
-            if (values.Length == 2)
-            {
-                ExoplanetData exoplanet_val = new ExoplanetData();
-                exoplanet_val.hip = values[0];
-                exoplanet_val.pl_pnum = int.Parse(values[1]);
-                exoplanet_data.Add(exoplanet_val);
-            }
-        }
+        exoplanet_color = false;
     }
 
     // Update is called once per frame
@@ -33,16 +18,32 @@ public class ExoplanetChange : StarDataLoader
     {
         
     }
-    void toggle_pressed()
+    public void changeScale()
     {
-        exoplanet_toggle = !exoplanet_toggle;
-        if (exoplanet_toggle)
-        {
-            change_colour_scheme();
-        }
+
     }
-    void change_colour_scheme()
+    public void changeColor()
     {
+        if (exoplanet_color)
+        {
+            for (int i = 0; i < StarDataLoader.star_data.Count; i++)
+            {
+                StarDataLoader.stars_objects[i].GetComponent<Renderer>().material.color = getColour(StarDataLoader.star_data[i].spect);
+            }
+            exoplanet_color = false;
+        }
+        else
+        {
+            for (int i = 0; i < StarDataLoader.star_data.Count; i++)
+            {
+            
+                if (StarDataLoader.star_data[i].pl_pnum != 0)
+                {
+                    StarDataLoader.stars_objects[i].GetComponent<Renderer>().material.color = exoColour(StarDataLoader.star_data[i].pl_pnum);
+                }
+            }
+            exoplanet_color = true;
+        }
         
     }
     Color exoColour(int val)
@@ -68,7 +69,7 @@ public class ExoplanetChange : StarDataLoader
             return new Color(255f/255f,255f/255f,191f/255f); // Light Yellow 
         }
 
-        else if (val == 6)
+        else if ( val == 6)
         {
             return new Color(155f/255f,103f/255f,60f/255f); // Brown 
         }
@@ -78,4 +79,5 @@ public class ExoplanetChange : StarDataLoader
         }
 
     }
+
 }
