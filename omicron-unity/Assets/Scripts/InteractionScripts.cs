@@ -20,7 +20,8 @@ public class InteractionScripts : StarDataLoader
     void Start()
     {
         exoplanet_color = false;
-        scale_text.text = "Scale: "+StarDataLoader.scale.ToString()+"x";
+        StarDataLoader.scale = 1f;
+        StarDataLoader.speed = 1f;
     }
 
     // Update is called once per frame

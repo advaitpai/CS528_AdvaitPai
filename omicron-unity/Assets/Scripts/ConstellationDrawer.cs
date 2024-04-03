@@ -17,6 +17,8 @@ public class ConstellationDrawer : StarDataLoader
     {
         constellation_lines = new List<string>();
         constellation_parent = new GameObject("Constellations");
+        StarDataLoader.scale = 1f;
+        StarDataLoader.speed = 1f;
         readConstellation();
         //InvokeRepeating("updateConstellations", 20.0f, 20.0f);
         //drawConstellations();
@@ -76,7 +78,7 @@ public class ConstellationDrawer : StarDataLoader
                         float point1_x = star_val.x0;
                         float point1_y = star_val.y0;
                         float point1_z = star_val.z0;
-                        point1 = new Vector3(point1_x, point1_y, point1_z);
+                        point1 = new Vector3(point1_x*StarDataLoader.scale, point1_y*StarDataLoader.scale, point1_z*StarDataLoader.scale);
                         continue;
                     
                     }
@@ -85,7 +87,7 @@ public class ConstellationDrawer : StarDataLoader
                         float point2_x = star_val.x0;
                         float point2_y = star_val.y0;
                         float point2_z = star_val.z0;
-                        point2 = new Vector3(point2_x, point2_y, point2_z);    
+                        point2 = new Vector3(point2_x*StarDataLoader.scale, point2_y*StarDataLoader.scale, point2_z*StarDataLoader.scale);    
                         continue;
                     }
                     if(point1 != new Vector3() && point2 != new Vector3())
@@ -131,11 +133,11 @@ public class ConstellationDrawer : StarDataLoader
             star_val.z0 = star_val.z0 + (star_val.vz*Time.deltaTime*StarDataLoader.speed);
             star_data[i] = star_val;
             lineData.line_hip = star_val.hip;
-            lineData.point_pos = new Vector3(star_val.x0, star_val.y0, star_val.z0);
+            lineData.point_pos = new Vector3(star_val.x0*StarDataLoader.scale, star_val.y0*StarDataLoader.scale, star_val.z0*StarDataLoader.scale);
             hip_linesData.Add(lineData);
             if(star_val.visible)
             {    
-                StarDataLoader.stars_objects[i].transform.position = new Vector3(star_val.x0, star_val.y0, star_val.z0);
+                StarDataLoader.stars_objects[i].transform.position = new Vector3(star_val.x0*StarDataLoader.scale, star_val.y0, star_val.z0);
             }
         }
         // for (var i = 0; i < constellation_parent.transform.childCount; i++)
