@@ -25,7 +25,11 @@ public class StarDataLoader : MonoBehaviour
 
     public static float scale;
 
+    public static float speed;
+
     public TextAsset exoplanet_datafile;
+
+    public static GameObject stars_parent;
 
     // Start is called before the first frame update
     void Start()
@@ -36,7 +40,8 @@ public class StarDataLoader : MonoBehaviour
         star_data = new List<StarData>();
         stars_objects = new List<GameObject>();
         scale = 1f;
-        threshold = 25f;
+        threshold = 20f;
+        speed = 1f;
         //last_render_pos = person_camera.transform.position;
         last_render_pos = new Vector3(0,0,0);
         for (var i = 1; i < lines.Length-1; i++)
@@ -53,9 +58,9 @@ public class StarDataLoader : MonoBehaviour
                 star_val.z0 = float.Parse(values[4])*0.3048f;
                 star_val.absmag = float.Parse(values[5]);
                 star_val.mag = values[6];
-                star_val.vx = float.Parse(values[7])*0.3048f*1.02269e-3f*100000;
-                star_val.vy = float.Parse(values[8])*0.3048f*1.02269e-3f*100000;
-                star_val.vz = float.Parse(values[9])*0.3048f*1.02269e-3f*100000;
+                star_val.vx = float.Parse(values[7])*0.3048f*1.02269e-3f*750000;
+                star_val.vy = float.Parse(values[8])*0.3048f*1.02269e-3f*750000;
+                star_val.vz = float.Parse(values[9])*0.3048f*1.02269e-3f*750000;
                 star_val.spect = values[10];
                 star_val.visible = false; 
                 star_val.pl_pnum = getPlNum(star_val.hip);
@@ -83,13 +88,13 @@ public class StarDataLoader : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (calculate_distance(person_camera.transform.position,last_render_pos) > 10f)
+        if (calculate_distance(person_camera.transform.position,last_render_pos) > 7.5f)
         {
             last_render_pos = person_camera.transform.position;
-            Debug.Log("10 units moved! Last render position: " + last_render_pos);
+            Debug.Log("7.5 units moved! Last render position: " + last_render_pos);
             drawStars();
         }
-        sol_dist.text = "Distance to Sol: "+((calculate_distance(person_camera.transform.position,new Vector3(0,1,0))/0.3048).ToString());
+        sol_dist.text = "Distance to Sol: "+((calculate_distance(person_camera.transform.position,new Vector3(0,1,0))/0.3048).ToString("F2"));
 
     }
     public Color getColour(string spect) // http://www.vendian.org/mncharity/dir3/starcolor/ Using the rgb values from here
@@ -138,7 +143,7 @@ public class StarDataLoader : MonoBehaviour
         for (var i = 0; i < star_data.Count; i++)
         {
             StarData star_val = star_data[i];
-            Vector3 star_loc = new Vector3(star_val.x0*scale,star_val.y0*scale,star_val.z0*scale);
+            Vector3 star_loc = new Vector3(star_val.x0,star_val.y0,star_val.z0);
             // if(star_val.hip != "")
             // {
             //     star_val.visible = true;
@@ -153,15 +158,10 @@ public class StarDataLoader : MonoBehaviour
             {
                 star_val.visible = false;
             }
-            if (max_dist < calculate_distance(last_render_pos,star_loc))
-            {
-                max_dist = calculate_distance(last_render_pos,star_loc);
-            }
             stars_objects[i].SetActive(star_val.visible);
         }
         star_loaded = true;
         Debug.Log("Stars loaded: " + count);
-        Debug.Log("Max distance: " + max_dist);
     }
     int getPlNum(string star_hip)
     {
