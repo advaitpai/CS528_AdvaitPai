@@ -27,7 +27,21 @@ public class InteractionScripts : StarDataLoader
     // Update is called once per frame
     void Update()
     {
-        
+        speed_text.text = "Speed: "+StarDataLoader.speed.ToString()+"x ("+StarDataLoader.years.ToString()+" years)";
+    }
+    public void toggleMotion()
+    {
+        StarDataLoader.stars_motion = !StarDataLoader.stars_motion;
+        if(StarDataLoader.stars_motion)
+        {
+            StarDataLoader.threshold = 20f;
+            drawStars();
+        }
+        else
+        {
+            StarDataLoader.threshold = 30f;
+            drawStars();
+        }
     }
     public void changeScale()
     {
@@ -44,11 +58,12 @@ public class InteractionScripts : StarDataLoader
         {
             StarDataLoader.scale = 1;
         }
+        drawStars();
         scale_text.text = "Scale: "+StarDataLoader.scale.ToString()+"x";
     }
     public void changeSpeed()
     {
-        Debug.Log("Speed Changed! "+speed_slider.value);
+        // Debug.Log("Speed Changed! "+speed_slider.value);
         float slider_val = speed_slider.value;
         if (slider_val > 5)
         {
@@ -62,8 +77,8 @@ public class InteractionScripts : StarDataLoader
         {
             StarDataLoader.speed = 1;
         }
-        Debug.Log("speed Changed! "+StarDataLoader.speed);
-        speed_text.text = "Speed: "+StarDataLoader.speed.ToString()+"x";
+        // Debug.Log("speed Changed! "+StarDataLoader.speed);
+        // speed_text.text = "Speed: "+StarDataLoader.speed.ToString()+"x";
     }
     public void changeColor()
     {
@@ -83,7 +98,7 @@ public class InteractionScripts : StarDataLoader
             
                 if (StarDataLoader.star_data[i].pl_pnum != 0)
                 {
-                    Debug.Log("Exoplanet Color Change!");
+                    // Debug.Log("Exoplanet Color Change!");
                     StarDataLoader.stars_objects[i].GetComponent<Renderer>().material.color = exoColour(StarDataLoader.star_data[i].pl_pnum);
                     count++;
                 }
@@ -97,7 +112,6 @@ public class InteractionScripts : StarDataLoader
     {
         if (val == 1)
         {
-            Debug.Log("Exoplanet Color Change to brown");
             return new Color(255f/255f,127f/255f,127f/255f); // Light Red 
         }
         else if (val == 2)

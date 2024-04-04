@@ -19,7 +19,7 @@ public class StarDataLoader : MonoBehaviour
 
     public static Vector3 last_render_pos;
 
-    public float threshold;
+    public static float threshold;
 
     public TMP_Text sol_dist;
 
@@ -30,37 +30,42 @@ public class StarDataLoader : MonoBehaviour
     public TextAsset exoplanet_datafile;
 
     public static GameObject stars_parent;
+    public static bool stars_motion;
+
+    public static List<StarData> init_star_data;
+    public static float years;
 
     // Start is called before the first frame update
     void Start()
     {
         // Read CSV file and store it in a list
-        Debug.Log("Loading Star Data");
+        // Debug.Log("Loading Star Data");
         var lines = star_datafile.text.Split('\n');
         star_data = new List<StarData>();
         stars_objects = new List<GameObject>();
+        stars_motion = false;
         scale = 1f;
-        threshold = 20f;
+        threshold = 30f;
         speed = 1f;
         //last_render_pos = person_camera.transform.position;
         last_render_pos = new Vector3(0,0,0);
         for (var i = 1; i < lines.Length-1; i++)
         {
             var values = lines[i].Split(',');
-            if (values.Length == 11)
+            if (values.Length == 11 && values[0]!="")
             {
                 StarData star_val = new StarData();
                 star_val.id = i;
-                star_val.hip = values[0];
+                star_val.hip = values[0].Substring(0,values[0].Length-2);
                 star_val.dist = values[1];
                 star_val.x0 = float.Parse(values[2])*0.3048f;
                 star_val.y0 = float.Parse(values[3])*0.3048f;
                 star_val.z0 = float.Parse(values[4])*0.3048f;
                 star_val.absmag = float.Parse(values[5]);
                 star_val.mag = values[6];
-                star_val.vx = float.Parse(values[7])*0.3048f*1.02269e-3f*750000;
-                star_val.vy = float.Parse(values[8])*0.3048f*1.02269e-3f*750000;
-                star_val.vz = float.Parse(values[9])*0.3048f*1.02269e-3f*750000;
+                star_val.vx = float.Parse(values[7])*0.3048f*1.02269e-6f*750000000;
+                star_val.vy = float.Parse(values[8])*0.3048f*1.02269e-6f*750000000;
+                star_val.vz = float.Parse(values[9])*0.3048f*1.02269e-6f*750000000;
                 star_val.spect = values[10];
                 star_val.visible = false; 
                 star_val.pl_pnum = getPlNum(star_val.hip);
@@ -81,6 +86,8 @@ public class StarDataLoader : MonoBehaviour
             }
     
         }
+        init_star_data = new List<StarData>();
+        init_star_data = star_data;
         drawStars();
 
     }
@@ -91,7 +98,7 @@ public class StarDataLoader : MonoBehaviour
         if (calculate_distance(person_camera.transform.position,last_render_pos) > 7.5f)
         {
             last_render_pos = person_camera.transform.position;
-            Debug.Log("7.5 units moved! Last render position: " + last_render_pos);
+            // Debug.Log("7.5 units moved! Last render position: " + last_render_pos);
             drawStars();
         }
         sol_dist.text = "Distance to Sol: "+((calculate_distance(person_camera.transform.position,new Vector3(0,1,0))/0.3048).ToString("F2"));
@@ -136,14 +143,14 @@ public class StarDataLoader : MonoBehaviour
     { 
         return Vector3.Distance(pos1,pos2);
     }
-    void drawStars()
+    public void drawStars()
     {
         int count = 0;
         float max_dist = 0;
         for (var i = 0; i < star_data.Count; i++)
         {
             StarData star_val = star_data[i];
-            Vector3 star_loc = new Vector3(star_val.x0,star_val.y0,star_val.z0);
+            Vector3 star_loc = new Vector3(star_val.x0*scale, star_val.y0*scale, star_val.z0*scale);
             // if(star_val.hip != "")
             // {
             //     star_val.visible = true;
@@ -152,16 +159,19 @@ public class StarDataLoader : MonoBehaviour
             if (calculate_distance(last_render_pos,star_loc) < threshold)
             {
                 star_val.visible = true;
+                stars_objects[i].transform.position = star_loc;
+                stars_objects[i].transform.localScale = new Vector3(0.1f*scale, 0.1f*scale, 0.1f*scale);
                 count++;
             }
             else
             {
                 star_val.visible = false;
             }
+            
             stars_objects[i].SetActive(star_val.visible);
         }
         star_loaded = true;
-        Debug.Log("Stars loaded: " + count);
+        // Debug.Log("Stars loaded: " + count);
     }
     int getPlNum(string star_hip)
     {
