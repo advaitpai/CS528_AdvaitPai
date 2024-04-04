@@ -42,7 +42,7 @@ public class ConstellationDrawer : StarDataLoader
         var lines = constellation_datafile.text.Split('\n');
         //Debug.Log("Reading constellation data"+ lines.Length);
         //int count = 0;
-        for (var i = 0; i < lines.Length-78; i++)
+        for (var i = 0; i < lines.Length; i++)
         {
             if (i > 88)
             {
@@ -78,7 +78,8 @@ public class ConstellationDrawer : StarDataLoader
                         float point1_x = star_val.x0;
                         float point1_y = star_val.y0;
                         float point1_z = star_val.z0;
-                        point1 = new Vector3(point1_x*StarDataLoader.scale, point1_y*StarDataLoader.scale, point1_z*StarDataLoader.scale);
+                        //point1 = new Vector3(point1_x*StarDataLoader.scale, point1_y*StarDataLoader.scale, point1_z*StarDataLoader.scale);
+                        point1 = new Vector3(point1_x, point1_y, point1_z);
                         continue;
                     
                     }
@@ -87,7 +88,8 @@ public class ConstellationDrawer : StarDataLoader
                         float point2_x = star_val.x0;
                         float point2_y = star_val.y0;
                         float point2_z = star_val.z0;
-                        point2 = new Vector3(point2_x*StarDataLoader.scale, point2_y*StarDataLoader.scale, point2_z*StarDataLoader.scale);    
+                        //point2 = new Vector3(point2_x*StarDataLoader.scale, point2_y*StarDataLoader.scale, point2_z*StarDataLoader.scale);  
+                        point2 = new Vector3(point2_x, point2_y, point2_z);  
                         continue;
                     }
                     if(point1 != new Vector3() && point2 != new Vector3())
@@ -103,13 +105,15 @@ public class ConstellationDrawer : StarDataLoader
                     GameObject line = new GameObject(lname);
                     line.transform.parent = constellation.transform;
                     LineRenderer lineRenderer = line.AddComponent<LineRenderer>();
+                    lineRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                    lineRenderer.receiveShadows = false;
+                    lineRenderer.motionVectorGenerationMode = MotionVectorGenerationMode.ForceNoMotion;
                     lineRenderer.startColor = Color.white;
                     lineRenderer.endColor = Color.white;
-                    //lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+                    lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
                     lineRenderer.positionCount = 2;
                     lineRenderer.startWidth = 0.03f;
                     lineRenderer.endWidth = 0.03f;
-                    lineRenderer.useWorldSpace = true;
                     lineRenderer.SetPosition(0, point1);
                     lineRenderer.SetPosition(1, point2);
                     line_count++;
@@ -137,6 +141,7 @@ public class ConstellationDrawer : StarDataLoader
             hip_linesData.Add(lineData);
             if(star_val.visible)
             {    
+                StarDataLoader.stars_objects[i].transform.localScale = new Vector3(0.1f*StarDataLoader.scale,0.1f*StarDataLoader.scale,0.1f*StarDataLoader.scale);
                 StarDataLoader.stars_objects[i].transform.position = new Vector3(star_val.x0*StarDataLoader.scale, star_val.y0, star_val.z0);
             }
         }
