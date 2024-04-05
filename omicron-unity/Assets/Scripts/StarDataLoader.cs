@@ -17,6 +17,8 @@ public class StarDataLoader : MonoBehaviour
 
     public GameObject person_camera;
 
+    public GameObject person_orient;
+
     public static Vector3 last_render_pos;
 
     public static float threshold;
@@ -37,14 +39,17 @@ public class StarDataLoader : MonoBehaviour
     public static string constellation_type;
 
     public static Vector3 first_render_pos;
+    public static Quaternion first_render_rot;
 
     public GameObject prefab;
+    public static bool reset_world;
 
     // Start is called before the first frame update
     void Start()
     {
         // Read CSV file and store it in a list
         // Debug.Log("Loading Star Data");
+        reset_world = false;
         star_datafile = Resources.Load<TextAsset>("athyg_31_reduced_m10_cleaned_subset");
         exoplanet_datafile = Resources.Load<TextAsset>("exoplanet_cleaned");
         var lines = star_datafile.text.Split('\n');
@@ -58,6 +63,7 @@ public class StarDataLoader : MonoBehaviour
         //last_render_pos = person_camera.transform.position;
         last_render_pos = new Vector3(0,0,0);
         first_render_pos = new Vector3(0,0,0);
+        first_render_rot = new Quaternion(0,0,0,0);
         for (var i = 1; i < lines.Length-1; i++)
         {
             var values = lines[i].Split(',');
@@ -84,7 +90,7 @@ public class StarDataLoader : MonoBehaviour
                 //GameObject star = GameObject.CreatePrimitive(PrimitiveType.Quad);
                 GameObject star = Instantiate(prefab);
                 star.transform.position = new Vector3(star_val.x0, star_val.y0, star_val.z0);
-                star.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+                star.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
                 star.GetComponent<Renderer>().material.color = getColour(star_val.spect);
                 //star.GetComponent<Renderer>().material.shader = Shader.Find("Sprites/Default");
                 stars_objects.Add(star);
@@ -102,6 +108,8 @@ public class StarDataLoader : MonoBehaviour
         if(first_render_pos == new Vector3(0,0,0))
         {
             first_render_pos = person_camera.transform.position;
+            first_render_rot = person_orient.transform.rotation;
+
         }
         if (calculate_distance(person_camera.transform.position,last_render_pos) > 7.5f)
         {
@@ -160,7 +168,7 @@ public class StarDataLoader : MonoBehaviour
             {
                 star_val.visible = true;
                 stars_objects[i].transform.position = star_loc;
-                stars_objects[i].transform.localScale = new Vector3(0.1f*scale, 0.1f*scale, 0.1f*scale);
+                stars_objects[i].transform.localScale = new Vector3(0.3f*scale, 0.3f*scale, 0.3f*scale);
             }
             else
             {

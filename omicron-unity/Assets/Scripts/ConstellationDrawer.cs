@@ -160,6 +160,7 @@ public class ConstellationDrawer : StarDataLoader
                 norse_constellation.SetActive(false);
             }
         }
+
     }
     void readConstellation(ref TextAsset datafile, ref GameObject constellationParent)
     {
@@ -268,18 +269,6 @@ public class ConstellationDrawer : StarDataLoader
                 lineRenderer.SetPosition(1,constellations_star_positions[hip_id[1]]);
             }
         }
-    }
-    public void reloadWorld()
-    {
-        StarDataLoader.scale = 1f;
-        StarDataLoader.stars_motion = false;
-        StarDataLoader.scale = 1f;
-        StarDataLoader.threshold = 30f;
-        StarDataLoader.speed = 1f;
-        StarDataLoader.years = 0f;
-        StarDataLoader.last_render_pos = new Vector3(0,1,0);
-        StarDataLoader.star_data = StarDataLoader.init_star_data;
-        drawStars();
     }
     
 }
