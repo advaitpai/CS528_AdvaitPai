@@ -16,12 +16,22 @@ public class InteractionScripts : StarDataLoader
     public TMP_Text scale_text;
     public TMP_Text speed_text;
 
+    public Toggle modernButton;
+    public Toggle boorongButton;
+    public Toggle egyptianButton;
+    public Toggle indianButton;
+    public Toggle norseButton;
+    public Toggle romanianButton;
+    public Toggle noneButton;
+
+
     // Start is called before the first frame update
     void Start()
     {
         exoplanet_color = false;
         StarDataLoader.scale = 1f;
         StarDataLoader.speed = 1f;
+        StarDataLoader.constellation_type = "modern";
     }
 
     // Update is called once per frame
@@ -141,5 +151,76 @@ public class InteractionScripts : StarDataLoader
         }
 
     }
+    public void setEgyptian()
+    {
+        StarDataLoader.constellation_type = "egyptian";
+        UpdateNavButtons();
+    }
+    public void setModern()
+    {
+        StarDataLoader.constellation_type = "modern";
+        UpdateNavButtons();
+    }
+    public void setBoorong()
+    {
+        StarDataLoader.constellation_type = "boorong";
+        UpdateNavButtons();
+    }
+    public void setIndian()
+    {
+        StarDataLoader.constellation_type = "indian";
+        UpdateNavButtons();
+    }
+    public void setRomanian()
+    {
+        StarDataLoader.constellation_type = "romanian";
+        UpdateNavButtons();
+    }
+    public void setNorse()
+    {
+        StarDataLoader.constellation_type = "norse";
+        UpdateNavButtons();
+    }
+    public void setNone()
+    {
+        StarDataLoader.constellation_type = "none";
+        UpdateNavButtons();
+    }
+    public void UpdateNavButtons()
+    {
+        modernButton.SetIsOnWithoutNotify(false);
+        boorongButton.SetIsOnWithoutNotify(false);
+        egyptianButton.SetIsOnWithoutNotify(false);
+        indianButton.SetIsOnWithoutNotify(false);
+        norseButton.SetIsOnWithoutNotify(false);
+        romanianButton.SetIsOnWithoutNotify(false);
+        noneButton.SetIsOnWithoutNotify(false);
+
+        switch (StarDataLoader.constellation_type)
+        {
+            case ("modern"):
+                modernButton.SetIsOnWithoutNotify(true);
+                break;
+            case ("boorong"):
+                boorongButton.SetIsOnWithoutNotify(true);
+                break;
+            case ("egyptian"):
+                egyptianButton.SetIsOnWithoutNotify(true);
+                break;
+            case ("indian"):
+                indianButton.SetIsOnWithoutNotify(true);
+                break;
+            case ("norse"):
+                norseButton.SetIsOnWithoutNotify(true);
+                break;
+            case ("romanian"):
+                romanianButton.SetIsOnWithoutNotify(true);
+                break;
+            case ("none"):
+                noneButton.SetIsOnWithoutNotify(true);
+                break;
+        }
+    }
+
 
 }

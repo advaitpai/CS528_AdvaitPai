@@ -5,16 +5,12 @@ using UnityEngine;
 public class ConstellationDrawer : StarDataLoader
 {
     
-    public TextAsset constellation_datafile;
-    public TextAsset indian_constellation_datafile;
-    public TextAsset romanian_constellation_datafile;
-    public TextAsset norse_constellation_datafile;
-    public TextAsset egyptian_constellation_datafile;
-    public TextAsset boorong_constellation_datafile;
-    
-
-
-    public static List<string> constellation_lines;
+    public static TextAsset constellation_datafile;
+    public static TextAsset indian_constellation_datafile;
+    public static TextAsset romanian_constellation_datafile;
+    public static TextAsset norse_constellation_datafile;
+    public static TextAsset egyptian_constellation_datafile;
+    public static TextAsset boorong_constellation_datafile;
 
     public static GameObject constellation_parent;
 
@@ -25,28 +21,41 @@ public class ConstellationDrawer : StarDataLoader
     public static GameObject egyptian_constellation;
     public static GameObject boorong_constellation;
 
+    public static string current_constellation;
+
     public static Dictionary<string, Vector3> constellations_star_positions; 
 
     // Start is called before the first frame update
     void Start()
     {
-        constellation_lines = new List<string>();
         constellation_parent = new GameObject("Constellations");
         indian_constellation = new GameObject("Indian Constellations");
         romanian_constellation = new GameObject("Romanian Constellations");
         norse_constellation = new GameObject("Norse Constellations");
         egyptian_constellation = new GameObject("Egyptian Constellations");
         boorong_constellation = new GameObject("Boorong Constellations");
+        constellation_datafile = Resources.Load<TextAsset>("constellation_coord");
+        indian_constellation_datafile = Resources.Load<TextAsset>("indian-constellationship");
+        romanian_constellation_datafile = Resources.Load<TextAsset>("romanian-constellationship");
+        norse_constellation_datafile = Resources.Load<TextAsset>("norse-constellationship");
+        egyptian_constellation_datafile = Resources.Load<TextAsset>("egyptian-constellationship");
+        boorong_constellation_datafile = Resources.Load<TextAsset>("boorong-constellationship");
         constellations_star_positions = new Dictionary<string, Vector3>();
         StarDataLoader.scale = 1f;
         StarDataLoader.speed = 1f;
-        readConstellation();
-        showNorseConstellations();
-        showBoorongConstellations();
-        //InvokeRepeating("updateConstellations", 15.0f, 10.0f);
-        showIndianConstellations();
-        showRomanianConstellations();
-        showEgyptianConstellations();
+        StarDataLoader.constellation_type = "modern";
+        current_constellation = StarDataLoader.constellation_type;
+        readConstellation(ref constellation_datafile,ref constellation_parent);
+        readConstellation(ref indian_constellation_datafile,ref indian_constellation);
+        readConstellation(ref romanian_constellation_datafile,ref romanian_constellation);
+        readConstellation(ref norse_constellation_datafile,ref norse_constellation);
+        readConstellation(ref egyptian_constellation_datafile,ref egyptian_constellation);
+        readConstellation(ref boorong_constellation_datafile,ref boorong_constellation);
+        indian_constellation.SetActive(false);
+        romanian_constellation.SetActive(false);
+        norse_constellation.SetActive(false);
+        egyptian_constellation.SetActive(false);
+        boorong_constellation.SetActive(false);
         
     }
 
@@ -56,20 +65,109 @@ public class ConstellationDrawer : StarDataLoader
         if(StarDataLoader.stars_motion)
         {
             moveStar();
-            updateConstellations();
+            if(StarDataLoader.constellation_type == "modern")
+            {
+                updateConstellations(ref constellation_parent);
+            }
+            else if(StarDataLoader.constellation_type == "indian")
+            {
+                updateConstellations(ref indian_constellation);
+            }
+            else if(StarDataLoader.constellation_type == "boorong")
+            {
+                updateConstellations(ref boorong_constellation);
+            }
+            else if(StarDataLoader.constellation_type == "egyptian")
+            {
+                updateConstellations(ref egyptian_constellation);
+            }
+            else if(StarDataLoader.constellation_type == "romanian")
+            {
+                updateConstellations(ref romanian_constellation);
+            }
+            else if(StarDataLoader.constellation_type == "norse")
+            {
+                updateConstellations(ref norse_constellation);
+            }
             StarDataLoader.years += 0.3048f*75000000*Time.deltaTime*StarDataLoader.speed;
         }
-        
+        if(StarDataLoader.constellation_type != current_constellation)
+        {
+            Debug.Log("Constellation Changed to "+StarDataLoader.constellation_type);
+            current_constellation = StarDataLoader.constellation_type;
+            Debug.Log("Current Constellation is "+current_constellation);
+            if(current_constellation=="modern")
+            {
+                constellation_parent.SetActive(true);
+                indian_constellation.SetActive(false);
+                boorong_constellation.SetActive(false);
+                egyptian_constellation.SetActive(false);
+                romanian_constellation.SetActive(false);
+                norse_constellation.SetActive(false);
+            }
+            else if(current_constellation=="indian")
+            {
+                indian_constellation.SetActive(true);
+                constellation_parent.SetActive(false);
+                boorong_constellation.SetActive(false);
+                egyptian_constellation.SetActive(false);
+                romanian_constellation.SetActive(false);
+                norse_constellation.SetActive(false);
+            }
+            else if (current_constellation == "boorong")
+            {
+                boorong_constellation.SetActive(true);
+                indian_constellation.SetActive(false);
+                constellation_parent.SetActive(false);
+                egyptian_constellation.SetActive(false);
+                romanian_constellation.SetActive(false);
+                norse_constellation.SetActive(false);
+            }
+            else if (current_constellation == "egyptian")
+            {
+                egyptian_constellation.SetActive(true);
+                indian_constellation.SetActive(false);
+                boorong_constellation.SetActive(false);
+                constellation_parent.SetActive(false);
+                romanian_constellation.SetActive(false);
+                norse_constellation.SetActive(false);
+            }
+            else if (current_constellation == "romanian")
+            {
+                romanian_constellation.SetActive(true);
+                indian_constellation.SetActive(false);
+                boorong_constellation.SetActive(false);
+                egyptian_constellation.SetActive(false);
+                constellation_parent.SetActive(false);
+                norse_constellation.SetActive(false);
+            }
+            else if (current_constellation == "norse")
+            {
+                norse_constellation.SetActive(true);
+                indian_constellation.SetActive(false);
+                boorong_constellation.SetActive(false);
+                egyptian_constellation.SetActive(false);
+                romanian_constellation.SetActive(false);
+                constellation_parent.SetActive(false);
+            }
+            else if (current_constellation == "none")
+            {
+                indian_constellation.SetActive(false);
+                boorong_constellation.SetActive(false);
+                egyptian_constellation.SetActive(false);
+                romanian_constellation.SetActive(false);
+                constellation_parent.SetActive(false);
+                norse_constellation.SetActive(false);
+            }
+        }
     }
-    void readConstellation()
+    void readConstellation(ref TextAsset datafile, ref GameObject constellationParent)
     {
-        var lines = constellation_datafile.text.Split('\n');
+        Debug.Log("Reading Constellation Data"+datafile.name);
+        var lines = datafile.text.Split('\n');
+        List<string> constellation_lines = new List<string>();
         for (var i = 0; i < lines.Length; i++)
         {
-            if (i > 88)
-            {
-                break;
-            }
             if (lines[i] != "")
             {
                 constellation_lines.Add(lines[i]);
@@ -81,8 +179,8 @@ public class ConstellationDrawer : StarDataLoader
         {
             var hip_id = constellation_lines[x].Split(' ');
             GameObject constellation = new GameObject(hip_id[0]);
-            constellation.transform.parent = constellation_parent.transform;
-            for (var i = 3; i < hip_id.Length-1; i+=2)
+            constellation.transform.parent = constellationParent.transform;
+            for (var i = 2; i < hip_id.Length-1; i+=2)
             {
                 Vector3 point1 = new Vector3();
                 Vector3 point2 = new Vector3();
@@ -93,13 +191,13 @@ public class ConstellationDrawer : StarDataLoader
                     {
                         continue;
                     }
-                    if (float.Parse(star_val.hip) == float.Parse(hip_id[i]))
+                    if (star_val.hip == hip_id[i])
                     {
                         point1 = new Vector3(star_val.x0, star_val.y0, star_val.z0);
                         continue;
                     
                     }
-                    if (float.Parse(star_val.hip) == float.Parse(hip_id[i+1]))
+                    if (star_val.hip == hip_id[i+1])
                     {
                         point2 = new Vector3(star_val.x0, star_val.y0, star_val.z0);  
                         continue;
@@ -116,13 +214,9 @@ public class ConstellationDrawer : StarDataLoader
                     GameObject line = new GameObject(lname);
                     line.transform.parent = constellation.transform;
                     LineRenderer lineRenderer = line.AddComponent<LineRenderer>();
-                    lineRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-                    lineRenderer.receiveShadows = false;
-                    lineRenderer.motionVectorGenerationMode = MotionVectorGenerationMode.ForceNoMotion;
-                    lineRenderer.startColor = Color.white;
-                    lineRenderer.endColor = Color.white;
                     lineRenderer.useWorldSpace = true;
-                    lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+                    lineRenderer.material = new Material(Shader.Find("Unlit/Color"));
+                    lineRenderer.material.color = Color.white;
                     lineRenderer.positionCount = 2;
                     lineRenderer.startWidth = 0.03f;
                     lineRenderer.endWidth = 0.03f;
@@ -159,12 +253,12 @@ public class ConstellationDrawer : StarDataLoader
         }
 
     }
-    void updateConstellations()
+    void updateConstellations(ref GameObject constellation_current_parent)
     {
         
-        for (var i = 0; i < constellation_parent.transform.childCount; i++)
+        for (var i = 0; i < constellation_current_parent.transform.childCount; i++)
         {
-            GameObject constellation = constellation_parent.transform.GetChild(i).gameObject;
+            GameObject constellation = constellation_current_parent.transform.GetChild(i).gameObject;
             for (var j = 0; j < constellation.transform.childCount; j++)
             {
                 GameObject line = constellation.transform.GetChild(j).gameObject;
@@ -175,372 +269,17 @@ public class ConstellationDrawer : StarDataLoader
             }
         }
     }
-    void showIndianConstellations()
+    public void reloadWorld()
     {
-        var lines = indian_constellation_datafile.text.Split('\n');
-        List<string> temp_constellation_lines = new List<string>();
-        for (var i = 0; i < lines.Length; i++)
-        {
-            if (lines[i] != "")
-            {
-                temp_constellation_lines.Add(lines[i]);
-            }
-        }
-        
-        int line_count = 0;
-        for (var x = 0; x < temp_constellation_lines.Count; x++)
-        {
-            var hip_id = temp_constellation_lines[x].Split(' ');
-            GameObject constellation = new GameObject(hip_id[0]);
-            constellation.transform.parent = indian_constellation.transform;
-            for (var i = 2; i < hip_id.Length-1; i+=2)
-            {
-                Vector3 point1 = new Vector3();
-                Vector3 point2 = new Vector3();
-                for (var j = 0; j < StarDataLoader.star_data.Count; j++)
-                {
-                    // Debug.Log("Checking for star_data "+ star_data[j]["hip"]);
-                    StarData star_val = StarDataLoader.star_data[j];
-                    if(star_val.hip == "")
-                    {
-                        continue;
-                    }
-                    if (float.Parse(star_val.hip) == float.Parse(hip_id[i]))
-                    {
-                        //point1 = new Vector3(point1_x*StarDataLoader.scale, point1_y*StarDataLoader.scale, point1_z*StarDataLoader.scale);
-                        point1 = new Vector3(star_val.x0, star_val.y0, star_val.z0);
-                        continue;
-                    
-                    }
-                    if (float.Parse(star_val.hip) == float.Parse(hip_id[i+1]))
-                    {
-                        point2 = new Vector3(star_val.x0, star_val.y0, star_val.z0);    
-                        continue;
-                    }
-                    if(point1 != new Vector3() && point2 != new Vector3())
-                    {
-                        break;
-                    }
-                
-                } 
-                if (point1 != new Vector3() && point2 != new Vector3())
-                {
-                    string lname = hip_id[i] +"-"+ hip_id[i+1];
-                    GameObject line = new GameObject(lname);
-                    line.transform.parent = constellation.transform;
-                    LineRenderer lineRenderer = line.AddComponent<LineRenderer>();
-                    lineRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-                    lineRenderer.receiveShadows = false;
-                    lineRenderer.motionVectorGenerationMode = MotionVectorGenerationMode.ForceNoMotion;
-                    lineRenderer.startColor = Color.white;
-                    lineRenderer.endColor = Color.white;
-                    lineRenderer.useWorldSpace = true;
-                    lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-                    lineRenderer.positionCount = 2;
-                    lineRenderer.startWidth = 0.03f;
-                    lineRenderer.endWidth = 0.03f;
-                    lineRenderer.SetPosition(0, point1);
-                    lineRenderer.SetPosition(1, point2);
-                    line_count++;
-                }  
-            } 
-            
-        }
-        indian_constellation.SetActive(false);
-    }
-    void showBoorongConstellations()
-    {
-        var lines = boorong_constellation_datafile.text.Split('\n');
-        List<string> temp_constellation_lines = new List<string>();
-        for (var i = 0; i < lines.Length; i++)
-        {
-            if (lines[i] != "")
-            {
-                temp_constellation_lines.Add(lines[i]);
-            }
-        }
-        
-        int line_count = 0;
-        for (var x = 0; x < temp_constellation_lines.Count; x++)
-        {
-            var hip_id = temp_constellation_lines[x].Split(' ');
-            GameObject constellation = new GameObject(hip_id[0]);
-            constellation.transform.parent = boorong_constellation.transform;
-            for (var i = 2; i < hip_id.Length-1; i+=2)
-            {
-                Vector3 point1 = new Vector3();
-                Vector3 point2 = new Vector3();
-                for (var j = 0; j < StarDataLoader.star_data.Count; j++)
-                {
-                    StarData star_val = StarDataLoader.star_data[j];
-                    if(star_val.hip == "")
-                    {
-                        continue;
-                    }
-                    if (float.Parse(star_val.hip) == float.Parse(hip_id[i]))
-                    {
-                        point1 = new Vector3(star_val.x0, star_val.y0, star_val.z0);
-                        continue;
-                    
-                    }
-                    if (float.Parse(star_val.hip) == float.Parse(hip_id[i+1]))
-                    {
-                        point2 = new Vector3(star_val.x0, star_val.y0, star_val.z0);   
-                        continue;
-                    }
-                    if(point1 != new Vector3() && point2 != new Vector3())
-                    {
-                        break;
-                    }
-                
-                } 
-                if (point1 != new Vector3() && point2 != new Vector3())
-                {
-                    //Debug.Log("Attempting to draw line between " + point1 + " and " + point2);
-                    string lname = hip_id[i] +"-"+ hip_id[i+1];
-                    GameObject line = new GameObject(lname);
-                    line.transform.parent = constellation.transform;
-                    LineRenderer lineRenderer = line.AddComponent<LineRenderer>();
-                    lineRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-                    lineRenderer.receiveShadows = false;
-                    lineRenderer.motionVectorGenerationMode = MotionVectorGenerationMode.ForceNoMotion;
-                    lineRenderer.useWorldSpace = true;
-                    lineRenderer.material.color = Color.white;
-                    lineRenderer.positionCount = 2;
-                    lineRenderer.startWidth = 0.02f;
-                    lineRenderer.endWidth = 0.02f;
-                    lineRenderer.SetPosition(0, point1);
-                    lineRenderer.SetPosition(1, point2);
-                    line_count++;
-                }  
-            } 
-            
-        }
-        boorong_constellation.SetActive(false);
-    }
-    void showRomanianConstellations()
-    {
-        var lines = romanian_constellation_datafile.text.Split('\n');
-        List<string> temp_constellation_lines = new List<string>();
-        for (var i = 0; i < lines.Length; i++)
-        {
-            if (lines[i] != "")
-            {
-                temp_constellation_lines.Add(lines[i]);
-            }
-        }
-        
-        int line_count = 0;
-        for (var x = 0; x < temp_constellation_lines.Count; x++)
-        {
-            var hip_id = temp_constellation_lines[x].Split(' ');
-            GameObject constellation = new GameObject(hip_id[0]);
-            constellation.transform.parent = romanian_constellation.transform;
-            for (var i = 2; i < hip_id.Length-1; i+=2)
-            {
-                Vector3 point1 = new Vector3();
-                Vector3 point2 = new Vector3();
-                for (var j = 0; j < StarDataLoader.star_data.Count; j++)
-                {
-            
-                    StarData star_val = StarDataLoader.star_data[j];
-                    if(star_val.hip == "")
-                    {
-                        continue;
-                    }
-                    if (float.Parse(star_val.hip) == float.Parse(hip_id[i]))
-                    {
-                        //point1 = new Vector3(point1_x*StarDataLoader.scale, point1_y*StarDataLoader.scale, point1_z*StarDataLoader.scale);
-                        point1 = new Vector3(star_val.x0, star_val.y0, star_val.z0);
-                        continue;
-                    
-                    }
-                    if (float.Parse(star_val.hip) == float.Parse(hip_id[i+1]))
-                    {
-                        point2 = new Vector3(star_val.x0, star_val.y0, star_val.z0);    
-                        continue;
-                    }
-                    if(point1 != new Vector3() && point2 != new Vector3())
-                    {
-                        break;
-                    }
-                
-                } 
-                if (point1 != new Vector3() && point2 != new Vector3())
-                {
-                    //Debug.Log("Attempting to draw line between " + point1 + " and " + point2);
-                    string lname = hip_id[i] +"-"+ hip_id[i+1];
-                    GameObject line = new GameObject(lname);
-                    line.transform.parent = constellation.transform;
-                    LineRenderer lineRenderer = line.AddComponent<LineRenderer>();
-                    lineRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-                    lineRenderer.receiveShadows = false;
-                    lineRenderer.motionVectorGenerationMode = MotionVectorGenerationMode.ForceNoMotion;
-                    lineRenderer.startColor = Color.white;
-                    lineRenderer.endColor = Color.white;
-                    lineRenderer.useWorldSpace = true;
-                    lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-                    lineRenderer.positionCount = 2;
-                    lineRenderer.startWidth = 0.03f;
-                    lineRenderer.endWidth = 0.03f;
-                    lineRenderer.SetPosition(0, point1);
-                    lineRenderer.SetPosition(1, point2);
-                    line_count++;
-                }  
-            } 
-            
-        }
-        romanian_constellation.SetActive(false);
-    }
-
-    void showEgyptianConstellations()
-    {
-        var lines = egyptian_constellation_datafile.text.Split('\n');
-        List<string> temp_constellation_lines = new List<string>();
-        for (var i = 0; i < lines.Length; i++)
-        {
-            if (lines[i] != "")
-            {
-                temp_constellation_lines.Add(lines[i]);
-            }
-        }
-        
-        int line_count = 0;
-        for (var x = 0; x < temp_constellation_lines.Count; x++)
-        {
-            var hip_id = temp_constellation_lines[x].Split(' ');
-            GameObject constellation = new GameObject(hip_id[0]);
-            constellation.transform.parent = egyptian_constellation.transform;
-            for (var i = 2; i < hip_id.Length-1; i+=2)
-            {
-                Vector3 point1 = new Vector3();
-                Vector3 point2 = new Vector3();
-                for (var j = 0; j < StarDataLoader.star_data.Count; j++)
-                {
-                    // Debug.Log("Checking for star_data "+ star_data[j]["hip"]);
-                    StarData star_val = StarDataLoader.star_data[j];
-                    if(star_val.hip == "")
-                    {
-                        continue;
-                    }
-                    if (float.Parse(star_val.hip) == float.Parse(hip_id[i]))
-                    {
-                        //point1 = new Vector3(point1_x*StarDataLoader.scale, point1_y*StarDataLoader.scale, point1_z*StarDataLoader.scale);
-                        point1 = new Vector3(star_val.x0, star_val.y0, star_val.z0);
-                        continue;
-                    
-                    }
-                    if (float.Parse(star_val.hip) == float.Parse(hip_id[i+1]))
-                    {
-                        point2 = new Vector3(star_val.x0, star_val.y0, star_val.z0);    
-                        continue;
-                    }
-                    if(point1 != new Vector3() && point2 != new Vector3())
-                    {
-                        break;
-                    }
-                
-                } 
-                if (point1 != new Vector3() && point2 != new Vector3())
-                {
-                    //Debug.Log("Attempting to draw line between " + point1 + " and " + point2);
-                    string lname = hip_id[i] +"-"+ hip_id[i+1];
-                    GameObject line = new GameObject(lname);
-                    line.transform.parent = constellation.transform;
-                    LineRenderer lineRenderer = line.AddComponent<LineRenderer>();
-                    lineRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-                    lineRenderer.receiveShadows = false;
-                    lineRenderer.motionVectorGenerationMode = MotionVectorGenerationMode.ForceNoMotion;
-                    lineRenderer.startColor = Color.white;
-                    lineRenderer.endColor = Color.white;
-                    lineRenderer.useWorldSpace = true;
-                    lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-                    lineRenderer.positionCount = 2;
-                    lineRenderer.startWidth = 0.03f;
-                    lineRenderer.endWidth = 0.03f;
-                    lineRenderer.SetPosition(0, point1);
-                    lineRenderer.SetPosition(1, point2);
-                    line_count++;
-                }  
-            } 
-            
-        }
-        egyptian_constellation.SetActive(false);
-    }
-    void showNorseConstellations()
-    {
-        var lines = norse_constellation_datafile.text.Split('\n');
-        List<string> temp_constellation_lines = new List<string>();
-        for (var i = 0; i < lines.Length; i++)
-        {
-            if (lines[i] != "")
-            {
-                temp_constellation_lines.Add(lines[i]);
-            }
-        }
-        
-        int line_count = 0;
-        for (var x = 0; x < temp_constellation_lines.Count; x++)
-        {
-            var hip_id = temp_constellation_lines[x].Split(' ');
-            GameObject constellation = new GameObject(hip_id[0]);
-            constellation.transform.parent = norse_constellation.transform;
-            for (var i = 3; i < hip_id.Length-1; i+=2)
-            {
-                Vector3 point1 = new Vector3();
-                Vector3 point2 = new Vector3();
-                for (var j = 0; j < StarDataLoader.star_data.Count; j++)
-                {
-                    // Debug.Log("Checking for star_data "+ star_data[j]["hip"]);
-                    StarData star_val = StarDataLoader.star_data[j];
-                    if(star_val.hip == "")
-                    {
-                        continue;
-                    }
-                    if (float.Parse(star_val.hip) == float.Parse(hip_id[i]))
-                    {
-                        //point1 = new Vector3(point1_x*StarDataLoader.scale, point1_y*StarDataLoader.scale, point1_z*StarDataLoader.scale);
-                        point1 = new Vector3(star_val.x0, star_val.y0, star_val.z0);
-                        continue;
-                    
-                    }
-                    if (float.Parse(star_val.hip) == float.Parse(hip_id[i+1]))
-                    {
-                        point2 = new Vector3(star_val.x0, star_val.y0, star_val.z0);    
-                        continue;
-                    }
-                    if(point1 != new Vector3() && point2 != new Vector3())
-                    {
-                        break;
-                    }
-                
-                } 
-                if (point1 != new Vector3() && point2 != new Vector3())
-                {
-                    //Debug.Log("Attempting to draw line between " + point1 + " and " + point2);
-                    string lname = hip_id[i] +"-"+ hip_id[i+1];
-                    GameObject line = new GameObject(lname);
-                    line.transform.parent = constellation.transform;
-                    LineRenderer lineRenderer = line.AddComponent<LineRenderer>();
-                    lineRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-                    lineRenderer.receiveShadows = false;
-                    lineRenderer.motionVectorGenerationMode = MotionVectorGenerationMode.ForceNoMotion;
-                    lineRenderer.startColor = Color.white;
-                    lineRenderer.endColor = Color.white;
-                    lineRenderer.useWorldSpace = true;
-                    lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-                    lineRenderer.positionCount = 2;
-                    lineRenderer.startWidth = 0.03f;
-                    lineRenderer.endWidth = 0.03f;
-                    lineRenderer.SetPosition(0, point1);
-                    lineRenderer.SetPosition(1, point2);
-                    line_count++;
-                }  
-            } 
-            
-        }
-        // Debug.Log("Total Lines for Norse:"+line_count);
-        norse_constellation.SetActive(false);
+        StarDataLoader.scale = 1f;
+        StarDataLoader.stars_motion = false;
+        StarDataLoader.scale = 1f;
+        StarDataLoader.threshold = 30f;
+        StarDataLoader.speed = 1f;
+        StarDataLoader.years = 0f;
+        StarDataLoader.last_render_pos = new Vector3(0,1,0);
+        StarDataLoader.star_data = StarDataLoader.init_star_data;
+        drawStars();
     }
     
 }

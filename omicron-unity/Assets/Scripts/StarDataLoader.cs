@@ -11,7 +11,7 @@ public class StarDataLoader : MonoBehaviour
     public static List<StarData> star_data;
     public static List<GameObject> stars_objects;
 
-    public TextAsset star_datafile;
+    public static TextAsset star_datafile;
 
     public static bool star_loaded;
 
@@ -27,19 +27,26 @@ public class StarDataLoader : MonoBehaviour
 
     public static float speed;
 
-    public TextAsset exoplanet_datafile;
+    public static TextAsset exoplanet_datafile;
 
-    public static GameObject stars_parent;
     public static bool stars_motion;
 
     public static List<StarData> init_star_data;
     public static float years;
+
+    public static string constellation_type;
+
+    public static Vector3 first_render_pos;
+
+    public GameObject prefab;
 
     // Start is called before the first frame update
     void Start()
     {
         // Read CSV file and store it in a list
         // Debug.Log("Loading Star Data");
+        star_datafile = Resources.Load<TextAsset>("athyg_31_reduced_m10_cleaned_subset");
+        exoplanet_datafile = Resources.Load<TextAsset>("exoplanet_cleaned");
         var lines = star_datafile.text.Split('\n');
         star_data = new List<StarData>();
         stars_objects = new List<GameObject>();
@@ -47,8 +54,10 @@ public class StarDataLoader : MonoBehaviour
         scale = 1f;
         threshold = 30f;
         speed = 1f;
+        constellation_type = "modern";
         //last_render_pos = person_camera.transform.position;
         last_render_pos = new Vector3(0,0,0);
+        first_render_pos = new Vector3(0,0,0);
         for (var i = 1; i < lines.Length-1; i++)
         {
             var values = lines[i].Split(',');
@@ -72,33 +81,31 @@ public class StarDataLoader : MonoBehaviour
                 star_data.Add(star_val);
                 
                 // Create a quad for each star
-                GameObject star = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                //GameObject star = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                GameObject star = Instantiate(prefab);
                 star.transform.position = new Vector3(star_val.x0, star_val.y0, star_val.z0);
-                star.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+                star.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
                 star.GetComponent<Renderer>().material.color = getColour(star_val.spect);
-                star.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Self-Illumin");
+                //star.GetComponent<Renderer>().material.shader = Shader.Find("Sprites/Default");
                 stars_objects.Add(star);
-            }
-            else
-            {
-                Debug.Log("Error in line " + i);
-                Debug.Log(values.Length);
             }
     
         }
         init_star_data = new List<StarData>();
         init_star_data = star_data;
         drawStars();
-
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(first_render_pos == new Vector3(0,0,0))
+        {
+            first_render_pos = person_camera.transform.position;
+        }
         if (calculate_distance(person_camera.transform.position,last_render_pos) > 7.5f)
         {
             last_render_pos = person_camera.transform.position;
-            // Debug.Log("7.5 units moved! Last render position: " + last_render_pos);
             drawStars();
         }
         sol_dist.text = "Distance to Sol: "+((calculate_distance(person_camera.transform.position,new Vector3(0,1,0))/0.3048).ToString("F2"));
@@ -145,23 +152,15 @@ public class StarDataLoader : MonoBehaviour
     }
     public void drawStars()
     {
-        int count = 0;
-        float max_dist = 0;
         for (var i = 0; i < star_data.Count; i++)
         {
             StarData star_val = star_data[i];
             Vector3 star_loc = new Vector3(star_val.x0*scale, star_val.y0*scale, star_val.z0*scale);
-            // if(star_val.hip != "")
-            // {
-            //     star_val.visible = true;
-            //     count++;
-            // }
             if (calculate_distance(last_render_pos,star_loc) < threshold)
             {
                 star_val.visible = true;
                 stars_objects[i].transform.position = star_loc;
                 stars_objects[i].transform.localScale = new Vector3(0.1f*scale, 0.1f*scale, 0.1f*scale);
-                count++;
             }
             else
             {
@@ -171,7 +170,6 @@ public class StarDataLoader : MonoBehaviour
             stars_objects[i].SetActive(star_val.visible);
         }
         star_loaded = true;
-        // Debug.Log("Stars loaded: " + count);
     }
     int getPlNum(string star_hip)
     {
@@ -190,4 +188,6 @@ public class StarDataLoader : MonoBehaviour
         }
         return 0;
     }
+
+    
 }
