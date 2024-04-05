@@ -24,8 +24,11 @@ public class InteractionScripts : StarDataLoader
     public Toggle romanianButton;
     public Toggle noneButton;
 
+    public Toggle motionButton;
+
     public GameObject person_camera2;
     public GameObject person_orient2;
+    public GameObject menu_panel2;
 
 
     // Start is called before the first frame update
@@ -40,23 +43,7 @@ public class InteractionScripts : StarDataLoader
     // Update is called once per frame
     void Update()
     {
-        speed_text.text = "Speed: "+(StarDataLoader.speed/0.3048).ToString()+"x ("+StarDataLoader.years.ToString("F2")+" years)";
-        if(reset_world)
-        {
-            StarDataLoader.star_data = StarDataLoader.init_star_data;
-            // person_camera2.transform.position = Vector3.Lerp(person_camera2.transform.position, StarDataLoader.first_render_pos, Time.deltaTime*0.3f);
-            // person_orient2.transform.rotation = Quaternion.Lerp(person_orient2.transform.rotation, StarDataLoader.first_render_rot, Time.deltaTime*0.3f);
-            // StarDataLoader.last_render_pos = person_camera2.transform.position;
-            // drawStars();
-            // if(person_camera2.transform.position == StarDataLoader.first_render_pos && person_camera2.transform.rotation == StarDataLoader.first_render_rot)
-            // {
-            //     reset_world = false;
-            // }
-            person_camera2.transform.position = StarDataLoader.first_render_pos;
-            person_orient2.transform.rotation = StarDataLoader.first_render_rot;
-            drawStars();
-            reset_world = false;
-        }
+        speed_text.text = "Speed: "+(StarDataLoader.speed).ToString()+"x ("+(StarDataLoader.years/0.3048f).ToString("F2")+" years)";
     }
     public void toggleMotion()
     {
@@ -68,7 +55,7 @@ public class InteractionScripts : StarDataLoader
         }
         else
         {
-            StarDataLoader.threshold = 30f;
+            StarDataLoader.threshold = 25f;
             drawStars();
         }
     }
@@ -88,6 +75,7 @@ public class InteractionScripts : StarDataLoader
             StarDataLoader.scale = 1;
         }
         drawStars();
+        StarDataLoader.scale_changed = true;
         scale_text.text = "Scale: "+StarDataLoader.scale.ToString()+"x";
     }
     public void changeSpeed()
@@ -242,6 +230,13 @@ public class InteractionScripts : StarDataLoader
     }
     public void reloadWorld()
     {
+        StarDataLoader.stars_motion = false;
+        motionButton.SetIsOnWithoutNotify(false);
+        person_camera2.transform.position = StarDataLoader.first_render_pos;
+        person_orient2.transform.rotation = StarDataLoader.first_render_rot;
+        menu_panel2.transform.position = StarDataLoader.menu_render_pos;
+        menu_panel2.transform.rotation = StarDataLoader.menu_render_rot;
+        StarDataLoader.years = 0;
         StarDataLoader.reset_world = true;
 
     }

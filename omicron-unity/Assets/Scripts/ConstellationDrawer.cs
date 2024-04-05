@@ -11,19 +11,14 @@ public class ConstellationDrawer : StarDataLoader
     public static TextAsset norse_constellation_datafile;
     public static TextAsset egyptian_constellation_datafile;
     public static TextAsset boorong_constellation_datafile;
-
     public static GameObject constellation_parent;
-
     public static GameObject indian_constellation;
     public static GameObject romanian_constellation;
     public static GameObject norse_constellation;
-
     public static GameObject egyptian_constellation;
     public static GameObject boorong_constellation;
-
     public static string current_constellation;
-
-    public static Dictionary<string, Vector3> constellations_star_positions; 
+    public static Dictionary<string, Vector3> constellations_star_positions;
 
     // Start is called before the first frame update
     void Start()
@@ -90,6 +85,35 @@ public class ConstellationDrawer : StarDataLoader
                 updateConstellations(ref norse_constellation);
             }
             StarDataLoader.years += 0.3048f*75000000*Time.deltaTime*StarDataLoader.speed;
+        }
+        else if (!StarDataLoader.stars_motion && StarDataLoader.scale_changed)
+        {
+            updateConstellationStarPosition();
+            if(StarDataLoader.constellation_type == "modern")
+            {
+                updateConstellations(ref constellation_parent);
+            }
+            else if(StarDataLoader.constellation_type == "indian")
+            {
+                updateConstellations(ref indian_constellation);
+            }
+            else if(StarDataLoader.constellation_type == "boorong")
+            {
+                updateConstellations(ref boorong_constellation);
+            }
+            else if(StarDataLoader.constellation_type == "egyptian")
+            {
+                updateConstellations(ref egyptian_constellation);
+            }
+            else if(StarDataLoader.constellation_type == "romanian")
+            {
+                updateConstellations(ref romanian_constellation);
+            }
+            else if(StarDataLoader.constellation_type == "norse")
+            {
+                updateConstellations(ref norse_constellation);
+            }
+            StarDataLoader.scale_changed = false;
         }
         if(StarDataLoader.constellation_type != current_constellation)
         {
@@ -160,7 +184,38 @@ public class ConstellationDrawer : StarDataLoader
                 norse_constellation.SetActive(false);
             }
         }
-
+        if(StarDataLoader.reset_world)
+        {
+            StarDataLoader.star_data = StarDataLoader.init_star_data;
+            drawStars();
+            updateConstellationStarPosition();
+            if(StarDataLoader.constellation_type == "modern")
+            {
+                updateConstellations(ref constellation_parent);
+            }
+            else if(StarDataLoader.constellation_type == "indian")
+            {
+                updateConstellations(ref indian_constellation);
+            }
+            else if(StarDataLoader.constellation_type == "boorong")
+            {
+                updateConstellations(ref boorong_constellation);
+            }
+            else if(StarDataLoader.constellation_type == "egyptian")
+            {
+                updateConstellations(ref egyptian_constellation);
+            }
+            else if(StarDataLoader.constellation_type == "romanian")
+            {
+                updateConstellations(ref romanian_constellation);
+            }
+            else if(StarDataLoader.constellation_type == "norse")
+            {
+                updateConstellations(ref norse_constellation);
+            }
+            StarDataLoader.years += 0;
+            StarDataLoader.reset_world = false;
+        }
     }
     void readConstellation(ref TextAsset datafile, ref GameObject constellationParent)
     {
@@ -219,8 +274,8 @@ public class ConstellationDrawer : StarDataLoader
                     lineRenderer.material = new Material(Shader.Find("Unlit/Color"));
                     lineRenderer.material.color = Color.white;
                     lineRenderer.positionCount = 2;
-                    lineRenderer.startWidth = 0.03f;
-                    lineRenderer.endWidth = 0.03f;
+                    lineRenderer.startWidth = 0.01f;
+                    lineRenderer.endWidth = 0.01f;
                     lineRenderer.SetPosition(0, point1);
                     lineRenderer.SetPosition(1, point2);
                     constellations_star_positions[hip_id[i]] = point1;
@@ -267,6 +322,17 @@ public class ConstellationDrawer : StarDataLoader
                 var hip_id = line.name.Split('-');
                 lineRenderer.SetPosition(0,constellations_star_positions[hip_id[0]]);
                 lineRenderer.SetPosition(1,constellations_star_positions[hip_id[1]]);
+            }
+        }
+    }
+    void updateConstellationStarPosition()
+    {
+        for (var i = 0; i < StarDataLoader.star_data.Count; i++)
+        {
+            StarData star_val = StarDataLoader.star_data[i];
+            if(constellations_star_positions.ContainsKey(star_val.hip))
+            {
+                constellations_star_positions[star_val.hip] = new Vector3(star_val.x0*StarDataLoader.scale, star_val.y0*StarDataLoader.scale, star_val.z0*StarDataLoader.scale);
             }
         }
     }

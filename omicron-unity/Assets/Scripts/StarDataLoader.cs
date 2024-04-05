@@ -19,6 +19,8 @@ public class StarDataLoader : MonoBehaviour
 
     public GameObject person_orient;
 
+    public GameObject menu_panel;
+
     public static Vector3 last_render_pos;
 
     public static float threshold;
@@ -41,9 +43,13 @@ public class StarDataLoader : MonoBehaviour
     public static Vector3 first_render_pos;
     public static Quaternion first_render_rot;
 
+    public static Vector3 menu_render_pos;
+    public static Quaternion menu_render_rot;
+
     public GameObject prefab;
     public static bool reset_world;
 
+    public static bool scale_changed;
     // Start is called before the first frame update
     void Start()
     {
@@ -57,7 +63,7 @@ public class StarDataLoader : MonoBehaviour
         stars_objects = new List<GameObject>();
         stars_motion = false;
         scale = 1f;
-        threshold = 30f;
+        threshold = 25f;
         speed = 1f;
         constellation_type = "modern";
         //last_render_pos = person_camera.transform.position;
@@ -87,12 +93,10 @@ public class StarDataLoader : MonoBehaviour
                 star_data.Add(star_val);
                 
                 // Create a quad for each star
-                //GameObject star = GameObject.CreatePrimitive(PrimitiveType.Quad);
                 GameObject star = Instantiate(prefab);
                 star.transform.position = new Vector3(star_val.x0, star_val.y0, star_val.z0);
-                star.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                star.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
                 star.GetComponent<Renderer>().material.color = getColour(star_val.spect);
-                //star.GetComponent<Renderer>().material.shader = Shader.Find("Sprites/Default");
                 stars_objects.Add(star);
             }
     
@@ -109,9 +113,11 @@ public class StarDataLoader : MonoBehaviour
         {
             first_render_pos = person_camera.transform.position;
             first_render_rot = person_orient.transform.rotation;
+            menu_render_pos = menu_panel.transform.position;
+            menu_render_rot = menu_panel.transform.rotation;
 
         }
-        if (calculate_distance(person_camera.transform.position,last_render_pos) > 7.5f)
+        if (calculate_distance(person_camera.transform.position,last_render_pos) > 10f)
         {
             last_render_pos = person_camera.transform.position;
             drawStars();
@@ -121,33 +127,65 @@ public class StarDataLoader : MonoBehaviour
     }
     public Color getColour(string spect) // http://www.vendian.org/mncharity/dir3/starcolor/ Using the rgb values from here
     {
+        // if (spect == "O")
+        // {
+        //     return new Color(155f/255f,176f/255f,255f/255f);
+        // }
+        // else if (spect == "B")
+        // {
+        //     return new Color(170f/255f,191f/255f,255f/255f);
+        // }
+        // else if (spect == "A")
+        // {
+        //     return new Color(202f/255f,215f/255f,255f/255f);
+        // }
+        // else if (spect == "F")
+        // {
+        //     return new Color(248f/255f,247f/255f,255f/255f);
+        // }
+        // else if (spect == "G")
+        // {
+        //     return new Color(255f/255f,244f/255f,234f/255f);
+        // }
+        // else if (spect == "K")
+        // {
+        //     return new Color(255f/255f,210f/255f,161f/255f);
+        // }
+        // else if (spect == "M")
+        // {
+        //     return new Color(255f/255f,204f/255f,111f/255f);
+        // }
+        // else
+        // {
+        //     return Color.grey;
+        // }
         if (spect == "O")
         {
-            return new Color(155f/255f,176f/255f,255f/255f);
+            return new Color(105f/255f,176f/255f,255f/255f);
         }
         else if (spect == "B")
         {
-            return new Color(170f/255f,191f/255f,255f/255f);
+            return new Color(170f/255f,91f/255f,255f/255f);
         }
         else if (spect == "A")
         {
-            return new Color(202f/255f,215f/255f,255f/255f);
+            return new Color(202f/255f,115f/255f,255f/255f);
         }
         else if (spect == "F")
         {
-            return new Color(248f/255f,247f/255f,255f/255f);
+            return new Color(248f/255f,147f/255f,255f/255f);
         }
         else if (spect == "G")
         {
-            return new Color(255f/255f,244f/255f,234f/255f);
+            return new Color(255f/255f,144f/255f,134f/255f);
         }
         else if (spect == "K")
         {
-            return new Color(255f/255f,210f/255f,161f/255f);
+            return new Color(255f/255f,110f/255f,61f/255f);
         }
         else if (spect == "M")
         {
-            return new Color(255f/255f,204f/255f,111f/255f);
+            return new Color(255f/255f,104f/255f,11f/255f);
         }
         else
         {
@@ -168,7 +206,7 @@ public class StarDataLoader : MonoBehaviour
             {
                 star_val.visible = true;
                 stars_objects[i].transform.position = star_loc;
-                stars_objects[i].transform.localScale = new Vector3(0.3f*scale, 0.3f*scale, 0.3f*scale);
+                // stars_objects[i].transform.localScale = new Vector3(0.3f*scale, 0.3f*scale, 0.3f*scale);
             }
             else
             {
