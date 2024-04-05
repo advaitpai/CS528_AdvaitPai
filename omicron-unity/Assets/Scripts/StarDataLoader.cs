@@ -80,13 +80,13 @@ public class StarDataLoader : MonoBehaviour
                 star_val.hip = values[0].Substring(0,values[0].Length-2);
                 star_val.dist = values[1];
                 star_val.x0 = float.Parse(values[2])*0.3048f;
-                star_val.y0 = float.Parse(values[3])*0.3048f;
-                star_val.z0 = float.Parse(values[4])*0.3048f;
+                star_val.y0 = float.Parse(values[4])*0.3048f;
+                star_val.z0 = float.Parse(values[3])*0.3048f;
                 star_val.absmag = float.Parse(values[5]);
                 star_val.mag = values[6];
                 star_val.vx = float.Parse(values[7])*0.3048f*1.02269e-6f*750000000;
-                star_val.vy = float.Parse(values[8])*0.3048f*1.02269e-6f*750000000;
-                star_val.vz = float.Parse(values[9])*0.3048f*1.02269e-6f*750000000;
+                star_val.vy = float.Parse(values[9])*0.3048f*1.02269e-6f*750000000;
+                star_val.vz = float.Parse(values[8])*0.3048f*1.02269e-6f*750000000;
                 star_val.spect = values[10];
                 star_val.visible = false; 
                 star_val.pl_pnum = getPlNum(star_val.hip);
@@ -159,38 +159,39 @@ public class StarDataLoader : MonoBehaviour
         // {
         //     return Color.grey;
         // }
-        if (spect == "O")
+        if (spect == "O") 
         {
-            return new Color(105f/255f,176f/255f,255f/255f);
-        }
-        else if (spect == "B")
+            return new Color(155f/255f, 50f/255f, 255f/255f);
+        } 
+        else if (spect == "B") 
         {
-            return new Color(170f/255f,91f/255f,255f/255f);
-        }
-        else if (spect == "A")
+            return new Color(170f/255f, 70f/255f, 255f/255f);
+        } 
+        else if (spect == "A") 
         {
-            return new Color(202f/255f,115f/255f,255f/255f);
-        }
-        else if (spect == "F")
+            return new Color(202f/255f, 90f/255f, 255f/255f);
+        } 
+        else if (spect == "F") 
         {
-            return new Color(248f/255f,147f/255f,255f/255f);
-        }
-        else if (spect == "G")
+            return new Color(248f/255f, 110f/255f, 255f/255f);
+        } 
+        else if (spect == "G") 
         {
-            return new Color(255f/255f,144f/255f,134f/255f);
-        }
-        else if (spect == "K")
+            return new Color(255f/255f, 130f/255f, 234f/255f);
+        } 
+        else if (spect == "K") 
         {
-            return new Color(255f/255f,110f/255f,61f/255f);
-        }
-        else if (spect == "M")
+            return new Color(255f/255f, 150f/255f, 161f/255f);
+        } 
+        else if (spect == "M") 
         {
-            return new Color(255f/255f,104f/255f,11f/255f);
-        }
-        else
+            return new Color(255f/255f, 170f/255f, 111f/255f);
+        } 
+        else 
         {
             return Color.grey;
         }
+
     }
     float calculate_distance(Vector3 pos1,Vector3 pos2)
     { 
@@ -234,6 +235,15 @@ public class StarDataLoader : MonoBehaviour
         }
         return 0;
     }
-
+    void avoidBillboardEffect()
+    {
+        for (var i = 0; i < star_data.Count; i++)
+        {
+            if (star_data[i].visible)
+            {
+                stars_objects[i].transform.LookAt(person_camera.transform);
+            }
+        }
+    }
     
 }
