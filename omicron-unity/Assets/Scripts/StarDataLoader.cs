@@ -49,12 +49,16 @@ public class StarDataLoader : MonoBehaviour
     public static bool reset_world;
 
     public static bool scale_changed;
+
+    public static bool additional_info;
+
+    public static Dictionary<string,int> exoplanet_data;
     // Start is called before the first frame update
     void Start()
     {
         // Read CSV file and store it in a list
-        // Debug.Log("Loading Star Data");
         reset_world = false;
+        exoplanet_data = new Dictionary<string,int>();
         star_datafile = Resources.Load<TextAsset>("athyg_31_reduced_m10_cleaned_subset");
         exoplanet_datafile = Resources.Load<TextAsset>("exoplanet_cleaned");
         var lines = star_datafile.text.Split('\n');
@@ -69,6 +73,7 @@ public class StarDataLoader : MonoBehaviour
         last_render_pos = new Vector3(0,0,0);
         first_render_pos = new Vector3(0,0,0);
         first_render_rot = new Quaternion(0,0,0,0);
+        createExoDict();
         for (var i = 1; i < lines.Length-1; i++)
         {
             var values = lines[i].Split(',');
@@ -88,7 +93,14 @@ public class StarDataLoader : MonoBehaviour
                 star_val.vz = float.Parse(values[8])*0.3048f*1.02269e-6f*750000000;
                 star_val.spect = values[10];
                 star_val.visible = false; 
-                star_val.pl_pnum = getPlNum(star_val.hip);
+                if (exoplanet_data.ContainsKey(star_val.hip))
+                {
+                    star_val.pl_pnum = exoplanet_data[star_val.hip];
+                }
+                else
+                {
+                    star_val.pl_pnum = 0;
+                }
                 star_data.Add(star_val);
                 
                 // Create a quad for each star
@@ -121,42 +133,42 @@ public class StarDataLoader : MonoBehaviour
             last_render_pos = person_camera.transform.position;
             drawStars();
         }
-        sol_dist.text = "Distance to Sol: "+((calculate_distance(person_camera.transform.position,new Vector3(0,1,0))/0.3048).ToString("F2")+"parsecs");
+        sol_dist.text = "Distance to Sol: "+((calculate_distance(person_camera.transform.position,new Vector3(0,1,0))/0.3048*scale).ToString("F2")+"parsecs");
 
     }
     public Color getColour(string spect) // http://www.vendian.org/mncharity/dir3/starcolor/ Using the rgb values from here
     {
         if (spect == "O") 
         {
-            return new Color(155f/255f, 50f/255f, 255f/255f);
+            return new Color(165f/255f, 42f/255f, 42f/255f); // Brown
         } 
         else if (spect == "B") 
         {
-            return new Color(170f/255f, 70f/255f, 255f/255f);
+            return new Color(255f/255f, 255f/255f, 0f/255f); // Yellow
         } 
         else if (spect == "A") 
         {
-            return new Color(202f/255f, 90f/255f, 255f/255f);
+            return new Color(0f/255f, 255f/255f, 0f/255f); // Green
         } 
         else if (spect == "F") 
         {
-            return new Color(248f/255f, 110f/255f, 255f/255f);
+            return new Color(211f/255f, 211f/255f, 211f/255f); // Light Gray
         } 
         else if (spect == "G") 
         {
-            return new Color(255f/255f, 130f/255f, 234f/255f);
+            return new Color(255f/255f, 165f/255f, 0f/255f); // Orange
         } 
         else if (spect == "K") 
         {
-            return new Color(255f/255f, 150f/255f, 161f/255f);
+            return new Color(173f/255f, 216f/255f, 240f/255f); // Light Blue
         } 
         else if (spect == "M") 
         {
-            return new Color(255f/255f, 170f/255f, 111f/255f);
+            return new Color(255f/255f, 182f/255f, 193f/255f); // Light Pink
         } 
         else 
         {
-            return new Color(255/255f, 255/255f, 255/255f);
+            return new Color(255f/255f, 255f/255f, 255f/255f); // White
         }
 
     }
@@ -185,26 +197,14 @@ public class StarDataLoader : MonoBehaviour
         }
         star_loaded = true;
     }
-    int getPlNum(string star_hip)
+    void createExoDict()
     {
         var lines = exoplanet_datafile.text.Split('\n');
         for (var i =1; i<lines.Length;i++)
         {
             var values = lines[i].Split(',');
-            if (values.Length == 2)
-            {
-                string temp_hip = values[0];
-                if (temp_hip == star_hip)
-                {
-                    return int.Parse(values[1]);
-                }
-                else
-                { 
-                    return 0;
-                }
-            }
+            exoplanet_data.Add(values[0],int.Parse(values[1]));
         }
-        return 0;
     }
     void avoidBillboardEffect()
     {
@@ -212,7 +212,8 @@ public class StarDataLoader : MonoBehaviour
         {
             if (star_data[i].visible)
             {
-                stars_objects[i].transform.LookAt(person_camera.transform);
+                stars_objects[i].transform.LookAt(person_orient.transform);
+                // stars_objects[i].transform.LookAt(person_camera.transform);
             }
         }
     }

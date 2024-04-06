@@ -19,6 +19,8 @@ public class ConstellationDrawer : StarDataLoader
     public static GameObject boorong_constellation;
     public static string current_constellation;
     public static Dictionary<string, Vector3> constellations_star_positions;
+    
+    public static bool additional_previous;
 
     // Start is called before the first frame update
     void Start()
@@ -36,6 +38,7 @@ public class ConstellationDrawer : StarDataLoader
         egyptian_constellation_datafile = Resources.Load<TextAsset>("egyptian-constellationship");
         boorong_constellation_datafile = Resources.Load<TextAsset>("boorong-constellationship");
         constellations_star_positions = new Dictionary<string, Vector3>();
+        additional_previous = false;
         StarDataLoader.scale = 1f;
         StarDataLoader.speed = 1f;
         StarDataLoader.constellation_type = "modern";
@@ -117,9 +120,8 @@ public class ConstellationDrawer : StarDataLoader
         }
         if(StarDataLoader.constellation_type != current_constellation)
         {
-            Debug.Log("Constellation Changed to "+StarDataLoader.constellation_type);
+            
             current_constellation = StarDataLoader.constellation_type;
-            Debug.Log("Current Constellation is "+current_constellation);
             if(current_constellation=="modern")
             {
                 constellation_parent.SetActive(true);
@@ -216,10 +218,21 @@ public class ConstellationDrawer : StarDataLoader
             StarDataLoader.years += 0;
             StarDataLoader.reset_world = false;
         }
+        if(additional_previous!=StarDataLoader.additional_info)
+        {
+            if(StarDataLoader.additional_info)
+            {
+                showAdditionalInfo();
+            }
+            else
+            {
+                hideAdditionalInfo();
+            }
+            additional_previous = StarDataLoader.additional_info;
+        }
     }
     void readConstellation(ref TextAsset datafile, ref GameObject constellationParent)
     {
-        Debug.Log("Reading Constellation Data"+datafile.name);
         var lines = datafile.text.Split('\n');
         List<string> constellation_lines = new List<string>();
         for (var i = 0; i < lines.Length; i++)
@@ -337,6 +350,33 @@ public class ConstellationDrawer : StarDataLoader
             {
                 constellations_star_positions[star_val.hip] = new Vector3(star_val.x0*StarDataLoader.scale, star_val.y0*StarDataLoader.scale, star_val.z0*StarDataLoader.scale);
             }
+        }
+    }
+    void showAdditionalInfo()
+    {
+        indian_constellation.SetActive(false);
+        romanian_constellation.SetActive(false);
+        norse_constellation.SetActive(false);
+        egyptian_constellation.SetActive(false);
+        boorong_constellation.SetActive(false);
+        constellation_parent.SetActive(true);
+        for (var i = 0; i < constellation_parent.transform.childCount; i++)
+        {
+            if(constellation_parent.transform.GetChild(i).gameObject.name == "Mon")
+            {
+                constellation_parent.transform.GetChild(i).gameObject.SetActive(true);
+            }
+            else
+            {
+                constellation_parent.transform.GetChild(i).gameObject.SetActive(false);
+            }
+        }
+    }
+    void hideAdditionalInfo()
+    {
+        for (var i = 0; i < constellation_parent.transform.childCount; i++)
+        {
+            constellation_parent.transform.GetChild(i).gameObject.SetActive(true);
         }
     }
     

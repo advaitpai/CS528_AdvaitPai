@@ -30,6 +30,8 @@ public class InteractionScripts : StarDataLoader
     public GameObject person_orient2;
     public GameObject menu_panel2;
 
+    public GameObject featured_constellation;
+
 
     // Start is called before the first frame update
     void Start()
@@ -38,6 +40,7 @@ public class InteractionScripts : StarDataLoader
         StarDataLoader.scale = 1f;
         StarDataLoader.speed = 1f;
         StarDataLoader.constellation_type = "modern";
+        StarDataLoader.additional_info = false;
     }
 
     // Update is called once per frame
@@ -125,30 +128,31 @@ public class InteractionScripts : StarDataLoader
     {
         if (val == 1)
         {
-            return new Color(1f, 0f, 0f); // Solid Red 
+            return new Color(255f/255f, 0f, 0f); // Solid Red 
         }
         else if (val == 2)
         {
-            return new Color(0f, 0f, 1f); // Solid Blue 
+            return new Color(0f, 0f, 255f/255f); // Solid Blue 
         }
         else if (val == 3)
         {
-            return new Color(0f, 1f, 0f); // Solid Green
+            return new Color(0f, 255f/255f, 0f); // Solid Green
         }
         else if (val == 4)
         {
-            return new Color(0.5f, 0f, 0.5f); // Solid Purple
+            return new Color(127.5f/255f, 0f, 127.5f/255f); // Solid Purple
         }
         else if (val == 5)
         {
-            return new Color(1f, 1f, 0f); // Solid Yellow 
+            return new Color(255f/255f, 255f/255f, 0f); // Solid Yellow 
         }
         else if (val == 6)
         {
-            return new Color(0.5f, 0.25f, 0f); // Solid Brown 
+            return new Color(127.5f/255f, 63.75f/255f, 0f); // Solid Brown 
         }
+        else 
         {
-            return new Color(255/255f, 255/255f, 255/255f);
+            return new Color(255f/255f, 255f/255f, 255f/255f); // White
         }
 
     }
@@ -232,6 +236,24 @@ public class InteractionScripts : StarDataLoader
         menu_panel2.transform.rotation = StarDataLoader.menu_render_rot;
         StarDataLoader.years = 0;
         StarDataLoader.reset_world = true;
+
+    }
+    public void toggleAdditionalInfo()
+    {
+        StarDataLoader.additional_info = !StarDataLoader.additional_info;
+        if(StarDataLoader.additional_info)
+        {
+            
+            reloadWorld();
+            featured_constellation.SetActive(true);
+            StarDataLoader.additional_info = true;
+
+        }
+        else
+        {
+            featured_constellation.SetActive(false);
+            StarDataLoader.additional_info = false;
+        }
 
     }
 
