@@ -113,12 +113,8 @@ public class InteractionScripts : StarDataLoader
             for (int i = 0; i < StarDataLoader.star_data.Count; i++)
             {
             
-                if (StarDataLoader.star_data[i].pl_pnum != 0)
-                {
-                    // Debug.Log("Exoplanet Color Change!");
                     StarDataLoader.stars_objects[i].GetComponent<Renderer>().material.color = exoColour(StarDataLoader.star_data[i].pl_pnum);
                     count++;
-                }
             }
             Debug.Log("Exoplanet Color Change Count: "+count);
             exoplanet_color = true;
@@ -129,32 +125,30 @@ public class InteractionScripts : StarDataLoader
     {
         if (val == 1)
         {
-            return new Color(255f/255f,127f/255f,127f/255f); // Light Red 
+            return new Color(1f, 0f, 0f); // Solid Red 
         }
         else if (val == 2)
         {
-            return new Color(173f/255f,216f/255f,230f/255f); // Light Blue 
+            return new Color(0f, 0f, 1f); // Solid Blue 
         }
         else if (val == 3)
         {
-            return new Color(144f/255f,238f/255f,144f/255f); // Light Green
+            return new Color(0f, 1f, 0f); // Solid Green
         }
         else if (val == 4)
         {
-            return new Color(177f/255f,156f/255f,217f/255f); // Light Purple
+            return new Color(0.5f, 0f, 0.5f); // Solid Purple
         }
         else if (val == 5)
         {
-            return new Color(255f/255f,255f/255f,191f/255f); // Light Yellow 
+            return new Color(1f, 1f, 0f); // Solid Yellow 
         }
-
-        else if ( val == 6)
+        else if (val == 6)
         {
-            return new Color(155f/255f,103f/255f,60f/255f); // Brown 
+            return new Color(0.5f, 0.25f, 0f); // Solid Brown 
         }
-        else
         {
-            return Color.grey;
+            return new Color(255/255f, 255/255f, 255/255f);
         }
 
     }

@@ -6,8 +6,7 @@ using TMPro;
 
 public class StarDataLoader : MonoBehaviour
 {
-    // List to store the data
-    //public List<Dictionary<string, string>> star_data;
+    // List to store the data 
     public static List<StarData> star_data;
     public static List<GameObject> stars_objects;
 
@@ -83,7 +82,7 @@ public class StarDataLoader : MonoBehaviour
                 star_val.y0 = float.Parse(values[4])*0.3048f;
                 star_val.z0 = float.Parse(values[3])*0.3048f;
                 star_val.absmag = float.Parse(values[5]);
-                star_val.mag = values[6];
+                star_val.mag = float.Parse(values[6]);
                 star_val.vx = float.Parse(values[7])*0.3048f*1.02269e-6f*750000000;
                 star_val.vy = float.Parse(values[9])*0.3048f*1.02269e-6f*750000000;
                 star_val.vz = float.Parse(values[8])*0.3048f*1.02269e-6f*750000000;
@@ -95,7 +94,7 @@ public class StarDataLoader : MonoBehaviour
                 // Create a quad for each star
                 GameObject star = Instantiate(prefab);
                 star.transform.position = new Vector3(star_val.x0, star_val.y0, star_val.z0);
-                star.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
+                star.transform.localScale = new Vector3(0.055f*star_val.mag, 0.055f*star_val.mag, 0.055f*star_val.mag);
                 star.GetComponent<Renderer>().material.color = getColour(star_val.spect);
                 stars_objects.Add(star);
             }
@@ -104,6 +103,7 @@ public class StarDataLoader : MonoBehaviour
         init_star_data = new List<StarData>();
         init_star_data = star_data;
         drawStars();
+        InvokeRepeating("avoidBillboardEffect", 5f, 4f);
     }
 
     // Update is called once per frame
@@ -115,50 +115,17 @@ public class StarDataLoader : MonoBehaviour
             first_render_rot = person_orient.transform.rotation;
             menu_render_pos = menu_panel.transform.position;
             menu_render_rot = menu_panel.transform.rotation;
-
         }
         if (calculate_distance(person_camera.transform.position,last_render_pos) > 10f)
         {
             last_render_pos = person_camera.transform.position;
             drawStars();
         }
-        sol_dist.text = "Distance to Sol: "+((calculate_distance(person_camera.transform.position,new Vector3(0,1,0))/0.3048).ToString("F2"));
+        sol_dist.text = "Distance to Sol: "+((calculate_distance(person_camera.transform.position,new Vector3(0,1,0))/0.3048).ToString("F2")+"parsecs");
 
     }
     public Color getColour(string spect) // http://www.vendian.org/mncharity/dir3/starcolor/ Using the rgb values from here
     {
-        // if (spect == "O")
-        // {
-        //     return new Color(155f/255f,176f/255f,255f/255f);
-        // }
-        // else if (spect == "B")
-        // {
-        //     return new Color(170f/255f,191f/255f,255f/255f);
-        // }
-        // else if (spect == "A")
-        // {
-        //     return new Color(202f/255f,215f/255f,255f/255f);
-        // }
-        // else if (spect == "F")
-        // {
-        //     return new Color(248f/255f,247f/255f,255f/255f);
-        // }
-        // else if (spect == "G")
-        // {
-        //     return new Color(255f/255f,244f/255f,234f/255f);
-        // }
-        // else if (spect == "K")
-        // {
-        //     return new Color(255f/255f,210f/255f,161f/255f);
-        // }
-        // else if (spect == "M")
-        // {
-        //     return new Color(255f/255f,204f/255f,111f/255f);
-        // }
-        // else
-        // {
-        //     return Color.grey;
-        // }
         if (spect == "O") 
         {
             return new Color(155f/255f, 50f/255f, 255f/255f);
@@ -189,7 +156,7 @@ public class StarDataLoader : MonoBehaviour
         } 
         else 
         {
-            return Color.grey;
+            return new Color(255/255f, 255/255f, 255/255f);
         }
 
     }
@@ -230,6 +197,10 @@ public class StarDataLoader : MonoBehaviour
                 if (temp_hip == star_hip)
                 {
                     return int.Parse(values[1]);
+                }
+                else
+                { 
+                    return 0;
                 }
             }
         }

@@ -11,7 +11,7 @@ public class StarData
     public float y0;
     public float z0;
     public float absmag;
-    public string mag;
+    public float mag;
     public float vx;
     public float vy;
     public float vz;

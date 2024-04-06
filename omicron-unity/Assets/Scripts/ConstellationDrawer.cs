@@ -84,7 +84,7 @@ public class ConstellationDrawer : StarDataLoader
             {
                 updateConstellations(ref norse_constellation);
             }
-            StarDataLoader.years += 0.3048f*75000000*Time.deltaTime*StarDataLoader.speed;
+            StarDataLoader.years += 75000000*Time.deltaTime*StarDataLoader.speed;
         }
         else if (!StarDataLoader.stars_motion && StarDataLoader.scale_changed)
         {
@@ -266,6 +266,10 @@ public class ConstellationDrawer : StarDataLoader
                 } 
                 if (point1 != new Vector3() && point2 != new Vector3())
                 {
+                    if (hip_id[0] == "Ori")
+                    {
+                        
+                    }
                     string lname = hip_id[i] +"-"+ hip_id[i+1];
                     GameObject line = new GameObject(lname);
                     line.transform.parent = constellation.transform;
@@ -274,8 +278,8 @@ public class ConstellationDrawer : StarDataLoader
                     lineRenderer.material = new Material(Shader.Find("Unlit/Color"));
                     lineRenderer.material.color = Color.white;
                     lineRenderer.positionCount = 2;
-                    lineRenderer.startWidth = 0.01f;
-                    lineRenderer.endWidth = 0.01f;
+                    lineRenderer.startWidth = 0.025f;
+                    lineRenderer.endWidth = 0.025f;
                     lineRenderer.SetPosition(0, point1);
                     lineRenderer.SetPosition(1, point2);
                     constellations_star_positions[hip_id[i]] = point1;
@@ -283,7 +287,6 @@ public class ConstellationDrawer : StarDataLoader
                     line_count++;
                 }  
             } 
-            
         }
     } 
     void moveStar()
@@ -303,7 +306,7 @@ public class ConstellationDrawer : StarDataLoader
             }
             if(star_val.visible)
             {    
-                StarDataLoader.stars_objects[i].transform.localScale = new Vector3(0.1f*StarDataLoader.scale,0.1f*StarDataLoader.scale,0.1f*StarDataLoader.scale);
+                // StarDataLoader.stars_objects[i].transform.localScale = new Vector3(0.1f*StarDataLoader.scale,0.1f*StarDataLoader.scale,0.1f*StarDataLoader.scale);
                 StarDataLoader.stars_objects[i].transform.position = new Vector3(star_val.x0*StarDataLoader.scale, star_val.y0*StarDataLoader.scale, star_val.z0*StarDataLoader.scale);
             }
         }
