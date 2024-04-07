@@ -212,8 +212,8 @@ public class StarDataLoader : MonoBehaviour
         {
             if (star_data[i].visible)
             {
-                stars_objects[i].transform.LookAt(person_orient.transform);
-                // stars_objects[i].transform.LookAt(person_camera.transform);
+                // stars_objects[i].transform.LookAt(person_orient.transform);
+                stars_objects[i].transform.LookAt(person_camera.transform);
             }
         }
     }
