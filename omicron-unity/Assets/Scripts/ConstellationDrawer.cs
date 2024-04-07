@@ -280,10 +280,6 @@ public class ConstellationDrawer : StarDataLoader
                 } 
                 if (point1 != new Vector3() && point2 != new Vector3())
                 {
-                    if (hip_id[0] == "Ori")
-                    {
-                        
-                    }
                     string lname = hip_id[i] +"-"+ hip_id[i+1];
                     GameObject line = new GameObject(lname);
                     line.transform.parent = constellation.transform;
