@@ -88,9 +88,9 @@ public class StarDataLoader : MonoBehaviour
                 star_val.z0 = float.Parse(values[3])*0.3048f;
                 star_val.absmag = float.Parse(values[5]);
                 star_val.mag = float.Parse(values[6]);
-                star_val.vx = float.Parse(values[7])*0.3048f*1.02269e-6f*750000000;
-                star_val.vy = float.Parse(values[9])*0.3048f*1.02269e-6f*750000000;
-                star_val.vz = float.Parse(values[8])*0.3048f*1.02269e-6f*750000000;
+                star_val.vx = float.Parse(values[7])*0.3048f*1.02269e-6f*1000;
+                star_val.vy = float.Parse(values[9])*0.3048f*1.02269e-6f*1000;
+                star_val.vz = float.Parse(values[8])*0.3048f*1.02269e-6f*1000;
                 star_val.spect = values[10];
                 star_val.visible = false; 
                 if (exoplanet_data.ContainsKey(star_val.hip))

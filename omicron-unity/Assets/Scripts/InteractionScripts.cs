@@ -46,7 +46,7 @@ public class InteractionScripts : StarDataLoader
     // Update is called once per frame
     void Update()
     {
-        speed_text.text = "Speed: "+(StarDataLoader.speed).ToString()+"x ("+((int)(System.Math.Round(StarDataLoader.years / 100) * 100)).ToString("F2")+" years)";
+        speed_text.text = "Speed: "+(StarDataLoader.speed).ToString()+"x ("+((int)(System.Math.Round(StarDataLoader.years / 50) * 50)).ToString("F2")+" years)";
     }
     public void toggleMotion()
     {
