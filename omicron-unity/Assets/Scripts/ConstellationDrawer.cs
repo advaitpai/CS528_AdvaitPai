@@ -120,10 +120,11 @@ public class ConstellationDrawer : StarDataLoader
         }
         if(StarDataLoader.constellation_type != current_constellation)
         {
-            
+            updateConstellationStarPosition();
             current_constellation = StarDataLoader.constellation_type;
             if(current_constellation=="modern")
             {
+                updateConstellations(ref constellation_parent);
                 constellation_parent.SetActive(true);
                 indian_constellation.SetActive(false);
                 boorong_constellation.SetActive(false);
@@ -133,6 +134,7 @@ public class ConstellationDrawer : StarDataLoader
             }
             else if(current_constellation=="indian")
             {
+                updateConstellations(ref indian_constellation);
                 indian_constellation.SetActive(true);
                 constellation_parent.SetActive(false);
                 boorong_constellation.SetActive(false);
@@ -142,6 +144,7 @@ public class ConstellationDrawer : StarDataLoader
             }
             else if (current_constellation == "boorong")
             {
+                updateConstellations(ref boorong_constellation);
                 boorong_constellation.SetActive(true);
                 indian_constellation.SetActive(false);
                 constellation_parent.SetActive(false);
@@ -151,6 +154,7 @@ public class ConstellationDrawer : StarDataLoader
             }
             else if (current_constellation == "egyptian")
             {
+                updateConstellations(ref egyptian_constellation);
                 egyptian_constellation.SetActive(true);
                 indian_constellation.SetActive(false);
                 boorong_constellation.SetActive(false);
@@ -160,6 +164,7 @@ public class ConstellationDrawer : StarDataLoader
             }
             else if (current_constellation == "romanian")
             {
+                updateConstellations(ref romanian_constellation);
                 romanian_constellation.SetActive(true);
                 indian_constellation.SetActive(false);
                 boorong_constellation.SetActive(false);
@@ -169,6 +174,7 @@ public class ConstellationDrawer : StarDataLoader
             }
             else if (current_constellation == "norse")
             {
+                updateConstellations(ref norse_constellation);
                 norse_constellation.SetActive(true);
                 indian_constellation.SetActive(false);
                 boorong_constellation.SetActive(false);
