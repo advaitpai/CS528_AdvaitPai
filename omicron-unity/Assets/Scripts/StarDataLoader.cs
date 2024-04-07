@@ -136,7 +136,7 @@ public class StarDataLoader : MonoBehaviour
         sol_dist.text = "Distance to Sol: "+((calculate_distance(person_camera.transform.position,new Vector3(0,1,0))/0.3048*scale).ToString("F2")+"parsecs");
 
     }
-    public Color getColour(string spect) // http://www.vendian.org/mncharity/dir3/starcolor/ Using the rgb values from here
+    public Color getColour(string spect)
     {
         if (spect == "O") 
         {
