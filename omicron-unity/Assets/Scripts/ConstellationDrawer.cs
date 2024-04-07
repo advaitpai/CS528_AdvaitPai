@@ -223,6 +223,7 @@ public class ConstellationDrawer : StarDataLoader
             if(StarDataLoader.additional_info)
             {
                 showAdditionalInfo();
+            
             }
             else
             {
@@ -359,6 +360,7 @@ public class ConstellationDrawer : StarDataLoader
         norse_constellation.SetActive(false);
         egyptian_constellation.SetActive(false);
         boorong_constellation.SetActive(false);
+        StarDataLoader.constellation_type = "modern";
         constellation_parent.SetActive(true);
         for (var i = 0; i < constellation_parent.transform.childCount; i++)
         {
@@ -374,6 +376,7 @@ public class ConstellationDrawer : StarDataLoader
     }
     void hideAdditionalInfo()
     {
+        StarDataLoader.constellation_type= "modern";
         for (var i = 0; i < constellation_parent.transform.childCount; i++)
         {
             constellation_parent.transform.GetChild(i).gameObject.SetActive(true);
