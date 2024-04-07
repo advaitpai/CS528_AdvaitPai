@@ -87,7 +87,7 @@ public class ConstellationDrawer : StarDataLoader
             {
                 updateConstellations(ref norse_constellation);
             }
-            StarDataLoader.years += 75000000*Time.deltaTime*StarDataLoader.speed;
+            StarDataLoader.years += 0.3048f*1.02269e-6f*750000000*Time.deltaTime*StarDataLoader.speed;
         }
         else if (!StarDataLoader.stars_motion && StarDataLoader.scale_changed)
         {

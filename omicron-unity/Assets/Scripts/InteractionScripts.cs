@@ -46,7 +46,7 @@ public class InteractionScripts : StarDataLoader
     // Update is called once per frame
     void Update()
     {
-        speed_text.text = "Speed: "+(StarDataLoader.speed).ToString()+"x ("+(StarDataLoader.years/0.3048f).ToString("F2")+" years)";
+        speed_text.text = "Speed: "+(StarDataLoader.speed).ToString()+"x ("+((int)(System.Math.Round(StarDataLoader.years / 100) * 100)).ToString("F2")+" years)";
     }
     public void toggleMotion()
     {
@@ -79,7 +79,7 @@ public class InteractionScripts : StarDataLoader
         }
         drawStars();
         StarDataLoader.scale_changed = true;
-        scale_text.text = "Scale: "+StarDataLoader.scale.ToString()+"x";
+        scale_text.text = "Scale: "+StarDataLoader.scale.ToString("F2")+"x";
     }
     public void changeSpeed()
     {
